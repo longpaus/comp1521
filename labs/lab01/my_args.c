@@ -1,0 +1,6 @@
+#include <stdio.h>
+
+int main(int argc, char **argv) {
+	(void) argc, (void) argv; // keep the compiler quiet, should be removed
+	return 0;
+}
