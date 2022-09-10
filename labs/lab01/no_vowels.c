@@ -1,10 +1,24 @@
 #include <stdio.h>
 #include <string.h>
 
+int isLetterAVowel(char letter);
+
+char vowels[10] = {'a','e','i','o','u','A','E','I','O','U'};
 int main(void) {
 	char letter;
 	while(scanf("%c",&letter) != EOF){
-		printf("%c",letter);
+		if(isLetterAVowel(letter) == 1){
+			printf("%c",letter);
+		}
 	}
 	return 0;
+}
+
+int isLetterAVowel(char letter){
+	for(int i = 0; i < 10; i++){
+		if(vowels[i] == letter){
+			return 0;
+		}
+	}
+	return 1;
 }
