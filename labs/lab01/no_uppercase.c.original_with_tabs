@@ -2,11 +2,11 @@
 #include <ctype.h>
 
 int main(){
-    int letter;
+    char letter;
     while((letter = getchar())!= EOF){
         if(isupper(letter)){
-            letter = tolower(letter);
-        }
+			letter = tolower(letter);
+		}
         putchar(letter);
     }
 
