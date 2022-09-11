@@ -3,7 +3,7 @@
 
 int isLetterAVowel(char letter);
 
-char vowels[10] = {'a','e','i','o','u','A','E','I','O','U'};
+
 int main(void) {
 	char letter;
 	while(scanf("%c",&letter) != EOF){
@@ -15,6 +15,7 @@ int main(void) {
 }
 
 int isLetterAVowel(char letter){
+	char vowels[10] = {'a','e','i','o','u','A','E','I','O','U'};
 	for(int i = 0; i < 10; i++){
 		if(vowels[i] == letter){
 			return 0;
