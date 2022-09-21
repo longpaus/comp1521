@@ -1,24 +1,30 @@
-// #include<stdio.h>
-// int main(){
-//     int number = 3;
-//     printf("%p\n",&number);
-//     int *num = &number;
-//     printf("%d",*num);
-//     return 0;
-// }
+#include <stdio.h>
+
+int *get_num_ptr(void);
+
+int main(void) {
+    int *num = get_num_ptr();
+
+    printf("%d\n", *num);
+}
+
+int *get_num_ptr(void) {
+    int *x = malloc(sizeof(int));
+    *x = 42;
+    return x;
+}
 
 #include <stdio.h>
 
-void print_array(int *nums, int len) {
-    for (int i = 0; i < len; i++) {
-        printf("%d\n", nums[i]);
-    }
+int *get_num_ptr(void);
+
+int main(void) {
+    int *num = get_num_ptr();
+
+    printf("%d\n", *num);
 }
 
-int main(void)
-{
-    int nums[] = {3, 1, 4, 1, 5, 9, 2, 6, 5, 3};
-    print_array(nums, 10);
-
-    return 0;
+int *get_num_ptr(void) {
+    int x = 42;
+    return &x;
 }
