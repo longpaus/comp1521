@@ -63,6 +63,8 @@ loop3:
 	bgt	$t4,$t3,loop2Bottom	#if i > j goto loop2Bottom
 	addu	$t2,$t2,$t4	#total += i
 	addi	$t4,$t4,1	#i++
+	b	loop3			# branch to loop3
+	
 
 
 
