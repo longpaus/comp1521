@@ -32,7 +32,9 @@ loop1Top:
 	li	$t2,0		#t2 = 0 - total
 	li	$t3,1		#t3 = 1 - j
 
-	ble	$t3,$t1,loop2	#if j <= n then goto loop2
+	ble	$t3,$t1,loop2Top	#if j <= n then goto loop2Top
+	b	loop1Bottom	# branch to loop1Bottom
+	
 
 loop1Bottom:
 	li	$v0,1
