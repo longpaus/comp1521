@@ -18,16 +18,16 @@ main:                       # int main(void) {
 
     	move    $s0, $v0    # s0 = input number
 
-	li 	$t0,1	    # t0 = 1 			
+	li 	$t1,1	    # t1 = 1 			
 
 loop:
-	bgt	$t0, $s0, end	# if t0 > s0 then target
-	rem	$t1,$s0,7	#if(x % 7 == 0)
-	beq	$t1, 0, print	# if$t == $t1 then print number
-	rem	$t1,$s0,11	#if(x % 11 == 0)
-	beq	$t1, 0, print
+	bge	$t1, $s0, end	# if t1 >= s0 then target
+	rem	$t2,$t1,7	#t2 = t1 % 7 -remainder
+	beq	$t2, 0, print	# if(t2 == 0) then print number
+	rem	$t2,$t1,11	# t2 = t1 % 11 -remainder
+	beq	$t2, 0, print	#if(t2 == 0) then print number
 
-	addi    $t0,$t0,1       # add the counter by 1
+	addi    $t1,$t1,1       # add the counter by 1
     	b       loop            # branch to loop
     	
 
@@ -36,11 +36,13 @@ end:
     	jr      $ra             # return 0
 print:
 	li	$v0,1
-	move	$a0, $v0
+	move	$a0, $t1
 	syscall
-	li      $a0,'\n'    # printf("%c", '\n');
+	li      $a0,'\n'    	# printf("%c", '\n');
     	li      $v0,11
+	addi    $t1,$t1,1       # add the counter by 1
     	syscall 
+	b	loop
 
 
 .data
