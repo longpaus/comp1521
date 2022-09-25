@@ -16,9 +16,7 @@ main:				# int main(void) {
 	li	$v0, 5		# scanf("%d", number);
 	syscall
 
-	li	$a0, 42		# printf("%d", 42);
-	li	$v0, 1
-	syscall
+	move $s0,$v0	#s0 = input number
 
 	li	$a0, '\n'	# printf("%c", '\n');
 	li	$v0, 11
