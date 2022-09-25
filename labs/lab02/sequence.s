@@ -31,13 +31,30 @@ main:				# int main(void)
 	syscall
 	move	$t2,$v0		#t2 - stepping number
 
-	li	$t3,1		#t3 = 1 - counter
+	move	$t3,$t0		#t3 = t0 - counter
+	blt	$t0, $t1,less			# branch to less
 	bgt	$t0, $t1, greater	# if start > end then goto greater
-	b	less			# branch to less
 
 	
-
 greater:	#for start > stop
+	bgt	$t2,0,end	#if step > 0 goto end
+	blt	$t3, $t1, end	# if counter < end then goto end
+	
+
+	move	$a0,$t3
+	li	$v0,1
+	syscall
+	li	$a0, '\n'	# printf("%c", '\n');
+	li	$v0, 11
+	syscall
+	addu	$t3,$t3,$t2
+	b	greater		# branch to less
+	
+
+
+
+less:	#for start < stop
+	blt	$t2,0,end	#if step < 0 goto end
 	bgt	$t3,$t1,end	#if counter > end then goto end branch
 	move	$a0,$t3
 	li	$v0,1
@@ -46,19 +63,7 @@ greater:	#for start > stop
 	li	$v0, 11
 	syscall
 	addu	$t3,$t3,$t2	#counter += step
-	b	greater		# branch to target
-	
-
-less:
-	blt	$t3, $t1, end	# if counter < end then goto end
-	move	$a0,$t3
-	li	$v0,1
-	syscall
-	li	$a0, '\n'	# printf("%c", '\n');
-	li	$v0, 11
-	syscall
-	addu	$t3,$t3,$t2
-	b	less		# branch to less
+	b	less		# branch to target
 	
 
 
