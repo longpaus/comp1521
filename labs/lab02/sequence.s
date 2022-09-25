@@ -33,6 +33,8 @@ main:				# int main(void)
 
 	li	$t3,1		#t3 = 1 - counter
 	bgt	$t0, $t1, greater	# if start > end then goto greater
+	b	less			# branch to less
+
 	
 
 greater:	#for start > stop
@@ -44,9 +46,23 @@ greater:	#for start > stop
 	li	$v0, 11
 	syscall
 	addu	$t3,$t3,$t2	#counter += step
-	b	greater	# branch to target
+	b	greater		# branch to target
 	
 
+less:
+	blt	$t3, $t1, end	# if counter < end then goto end
+	move	$a0,$t3
+	li	$v0,1
+	syscall
+	li	$a0, '\n'	# printf("%c", '\n');
+	li	$v0, 11
+	syscall
+	addu	$t3,$t3,$t2
+	b	less		# branch to less
+	
+
+
+	
 end:
 	li	$v0, 0
 	jr	$ra		# return 0
