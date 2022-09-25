@@ -44,7 +44,7 @@ main:
     addi    $t2,    $t2,        1       # t2 = number2 - number1 + 1
 
     addu    $t3,    $t0,        $t1     # t3 = number1 + number2
-    divu    $t3,    $t3,        2       # t3 = (number1 + number2)/2
+    div    $t3,    $t3,        2       # t3 = (number1 + number2)/2
 
     mul     $t4,    $t3,        $t2     # t4 = (number2 - number1 + 1)*(number1 + number2)/2
 
