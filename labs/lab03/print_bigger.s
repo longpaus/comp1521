@@ -48,14 +48,15 @@ print_loop__body:
 	mul	$t1, $t0, 4			#   calculate &numbers[i] == numbers + 4 * i
 	la	$t2, numbers			#
 	add	$t2, $t2, $t1			#
-	lw	$a0, ($t2)			#
+	lw	$a0, ($t2)
+	blt	$a0,$t4,print_loop_counter	#  if numbers[i] < final_number goto print_loop_counter
 	li	$v0, 1				#   syscall 1: print_int
 	syscall					#   printf("%d", numbers[i]);
 
 	li	$v0, 11				#   syscall 11: print_char
 	li	$a0, '\n'			#
 	syscall					#   printf("%c", '\n');
-
+print_loop_counter:
 	addi	$t0, $t0, 1			#   i++;
 	j	print_loop__cond		# }
 print_loop__end:
