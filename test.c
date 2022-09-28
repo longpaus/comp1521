@@ -1,30 +1,5 @@
 #include <stdio.h>
-
-int *get_num_ptr(void);
-
-int main(void) {
-    int *num = get_num_ptr();
-
-    printf("%d\n", *num);
-}
-
-int *get_num_ptr(void) {
-    int *x = malloc(sizeof(int));
-    *x = 42;
-    return x;
-}
-
-#include <stdio.h>
-
-int *get_num_ptr(void);
-
-int main(void) {
-    int *num = get_num_ptr();
-
-    printf("%d\n", *num);
-}
-
-int *get_num_ptr(void) {
-    int x = 42;
-    return &x;
+int main(){
+    printf("%d",2%12);
+    return 0;
 }
