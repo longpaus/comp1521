@@ -31,7 +31,9 @@ scan_loop__body:
 	addi	$t0, $t0, 1			#   i++;
 	j	scan_loop__cond			# }
 scan_loop__end:
-
+	li	$v0,4
+	la	$a0,prompt
+	syscall
 print_loop__init:
 	li	$t0, 0				# i = 0
 print_loop__cond:
@@ -59,3 +61,5 @@ print_loop__end:
 	.data
 numbers:
 	.word	0:ARRAY_LEN			# int numbers[ARRAY_LEN] = {0};
+prompt:
+	.asciiz "Enter a number: "
