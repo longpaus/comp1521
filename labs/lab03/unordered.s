@@ -33,25 +33,12 @@ scan_loop__body:
 	addi	$t0, $t0, 1			#   i++;
 	j	scan_loop__cond			# }
 scan_loop__end:
-
 	b	check_loop_init			# branch to check_loop_init
-	
-
-	# li	$v0, 1				# syscall 1: print_int
-	# li	$a0, 42 			#
-	# syscall					# printf("%d", 42)
-
-	# li	$v0, 11				# syscall 11: print_char
-	# li	$a0, '\n'			#
-	# syscall					# printf("%c", '\n');
-
-	# li	$v0, 0
-	# jr	$ra				# return 0;
 
 check_loop_init:
 	li	$t0, 0				# i = 0;
 check_loop:
-	bge	$t0,8,end			#if i > 8 goto end (8 instead of 9 since we are using i + 1)
+	bge	$t0,9,end			#if i > 9 goto end 
 
 	#getting numbers[i]
 	mul	$t1,$t0,4			# the amount of memory i is at
@@ -77,6 +64,9 @@ end:
 	move 	$a0,$t5
 	li	$v0,1
 	syscall
+	li	$v0, 11				#   syscall 11: print_char
+	li	$a0, '\n'			#
+	syscall					#   printf("%c", '\n');
 	li $v0, 0
     	jr $ra
 
