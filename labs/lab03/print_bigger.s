@@ -11,6 +11,7 @@ main:
 	#  - $t2: temporary result
 	#  TODO: add your registers here
 	#  - $t3: memory location of last integer
+	#  - $t4: last integer
 
 
 	# TODO: modify the code below to behave like
@@ -36,13 +37,7 @@ scan_loop__end:
 	mul	$t3,$t3,4
 	la	$t2, numbers
 	add	$t3,$t2,$t3
-	$lw	$t4,0($t3)
-	li	$v0,1
-	move 	$a0,$t4
-	syscall
-	li	$v0,11
-	li	$a0,"\n"
-	syscall
+	lw	$t4,0($t3)
 
 print_loop__init:
 	li	$t0, 0				# i = 0
