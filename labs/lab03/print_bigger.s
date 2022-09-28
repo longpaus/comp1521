@@ -67,5 +67,3 @@ print_loop__end:
 	.data
 numbers:
 	.word	0:ARRAY_LEN			# int numbers[ARRAY_LEN] = {0};
-prompt:
-	.asciiz "Enter a number: "
