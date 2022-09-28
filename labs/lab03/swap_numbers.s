@@ -12,6 +12,9 @@ main:
 	#  - $t1: temporary result
 	#  - $t2: temporary result
 	#  TODO: add your registers here
+	#  - t3 = numbers[i]
+	#  - t4 = numbers[i + 1]
+
 
 scan_loop__init:
 	li	$t0, 0				# i = 0;
@@ -33,7 +36,34 @@ scan_loop__end:
 
 
 	# TODO: add your code here!
+swap_loop_intit:
+	li	$t0,0				# i = 0
 
+swap_loop:
+	bgt	$t0, ARRAY_LEN, print_loop__init	# if $t0 > ARRAY_LEN then goto print_loop__init
+	#get numbers[i]
+	mul	$t1,$t0,4
+	la	$t2,numbers
+	add	$t2,$t2,$t1			# t2 = memory location of numbers[i]
+	lw	$t3,0($t2)			# t3 = numbers[i]
+	
+	#get numbers[i + 1]
+	addi	$t1,$t0,1			# t1 = i + 1
+	mul	$1,$t1,4
+	la	$t5,numbers
+	add	$t5,$t5,$t1			# t5 = memory location of numbers[i + 1]
+	lw	$t4,0($t5)			# t4 = numbers[i + 1]
+
+	addi	$t0,$t0,1			# i++
+
+	bge	$t3,$t4,swap_loop		# if numbers[i] >= numbers[i + 1] goto swap_loop (dont swap)
+
+	#swapping
+	sw	$t4,($t2)
+	sw	$t3,($t5)
+	b	swap_loop			# branch to swap_loop
+	
+	
 
 print_loop__init:
 	li	$t0, 0				# i = 0
