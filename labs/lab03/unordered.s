@@ -55,7 +55,7 @@ check_loop:
 
 	addi	$t0,$t0,1			#i++
 
-	ble	$t4, $t3, check_loop		# if $t3 <= $t4 then check_loop
+	ble	$t4, $t3, check_loop		# if $t4 <= $t3 then check_loop
 
 	li	$t5,1				# t5 = 1
 	b	end				# branch to end
