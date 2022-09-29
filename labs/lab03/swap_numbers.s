@@ -14,6 +14,7 @@ main:
 	#  TODO: add your registers here
 	#  - t3 = numbers[i]
 	#  - t4 = numbers[i + 1]
+	li	$t4,0
 
 
 scan_loop__init:
@@ -37,10 +38,10 @@ scan_loop__end:
 
 	# TODO: add your code here!
 swap_loop_intit:
-	li	$t0,0				# i = 0
+	li	$t0,1				# i = 0
 
 swap_loop:
-	bgt	$t0, ARRAY_LEN, print_loop__init	# if $t0 > ARRAY_LEN then goto print_loop__init
+	bge	$t0, ARRAY_LEN, print_loop__init	# if $t0 >= ARRAY_LEN then goto print_loop__init
 	#get numbers[i]
 	mul	$t1,$t0,4
 	la	$t2,numbers
@@ -48,11 +49,11 @@ swap_loop:
 	lw	$t3,0($t2)			# t3 = numbers[i]
 	
 	#get numbers[i + 1]
-	addi	$t1,$t0,1			# t1 = i + 1
-	mul	$1,$t1,4
+	addi	$t1,$t0,-1			# t1 = i - 1
+	mul	$t1,$t1,4
 	la	$t5,numbers
 	add	$t5,$t5,$t1			# t5 = memory location of numbers[i + 1]
-	lw	$t4,0($t5)			# t4 = numbers[i + 1]
+	lw	$t4,($t5)			# t4 = numbers[i + 1]
 
 	addi	$t0,$t0,1			# i++
 
