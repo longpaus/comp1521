@@ -69,12 +69,6 @@ loop2_increase_count:
 	addi	$t1,$t1,1			# i++
 	b	loop2				# branch to loop2
 
-	
-	
-
-
-
-	
 
 print_loop__init:
 	li	$t0, 0				# i = 0
