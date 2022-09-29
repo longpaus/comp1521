@@ -36,9 +36,9 @@ scan_loop__end:
 	b	check_loop_init			# branch to check_loop_init
 
 check_loop_init:
-	li	$t0, 0				# i = 0;
+	li	$t0, 1				# i = 1;
 check_loop:
-	bge	$t0,9,end			#if i > 9 goto end 
+	bge	$t0,ARRAY_LEN,end			#if i >= ARRAY_LEN goto end 
 
 	#getting numbers[i]
 	mul	$t1,$t0,4			# the amount of memory i is at
@@ -46,16 +46,16 @@ check_loop:
 	add	$t2,$t2,$t1			# t2 = location of the integer i
 	lw	$t3,0($t2)			# t3 = numbers[i]
 
-	#getting numbers[i + 1]
-	addi	$t1,$t0,1			# t1 = i + 1
+	#getting numbers[i -1]
+	addi	$t1,$t0,-1			# t1 = i - 1
 	mul	$t1,$t1,4
 	la	$t2,numbers
 	add	$t2,$t2,$t1
-	lw	$t4,0($t2)			# t4 = numbers[i + 1]
+	lw	$t4,0($t2)			# t4 = numbers[i - 1]
 
 	addi	$t0,$t0,1			#i++
 
-	ble	$t3, $t4, check_loop		# if $t3 <= $t4 then check_loop
+	ble	$t4, $t3, check_loop		# if $t3 <= $t4 then check_loop
 
 	li	$t5,1				# t5 = 1
 	b	end				# branch to end
