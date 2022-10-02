@@ -8,14 +8,23 @@ main:
 	syscall			#
 	move	$t1, $v0
 
-	li	$a0, 42		# printf("%d\n", 42);
+	blt	$t0, $t1, printX	# if x < y goto printX
+
+	li	$a0, $t1		# printf("%d\n", y);
 	li	$v0, 1
 	syscall
-
-	li	$a0, '\n'	# printf("%c", '\n');
+	li	$a0, '\n'		# printf("%c", '\n');
 	li	$v0, 11
 	syscall
+	b 	end
 
+printX:
+	li	$a0, $t0		# printf("%d\n", x);
+	li	$v0, 1
+	syscall
+	li	$a0, '\n'		# printf("%c", '\n');
+	li	$v0, 11
+	syscall
 end:
-	li	$v0, 0		# return 0
+	li	$v0, 0			# return 0
 	jr	$ra
