@@ -7,7 +7,7 @@ main:
 	syscall				#
 	move	$t1, $v0
 
-	addi	$t0,$t0.1		# i = x + 1
+	addi	$t0,$t0,1		# i = x + 1
 
 loop:
 	bge	$t0,$t1,end		# if i >= y goto end
