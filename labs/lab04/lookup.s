@@ -29,7 +29,8 @@ main:
 
 	#get address of array[x][0]
 	la	$t2,array	# get address of array[0][0]
-	mul	$t3,N_COLS,4	#size of one row
+	li	$t7,N_COLS
+	mul	$t3,$t7,4	#size of one row
 	mul	$t3,$t3,$t0	
 	add	$t3,$t3,$t2	# t3 = address of array[x][0]
 
