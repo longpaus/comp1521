@@ -27,13 +27,21 @@ main:
 	syscall			#
 	move	$t1, $v0	# scanf("%d", &y);
 
+	#get address of array[x][0]
+	la	$t2,array	# get address of array[0][0]
+	mul	$t3,N_COLS,4	#size of one row
+	mul	$t3,$t3,$t0	
+	add	$t3,$t3,$t2	# t3 = address of array[x][0]
 
-	# TODO: add your code here!
+	#get size of y collumns
+	mul	$t4,$t1,4	# t4 = size of y col
+	
+	add	$t3,$t3,$t4	
 
+	lw	$a0, 0($t3)
 
-	li	$v0, 1		# syscall 1: print_int
-	li	$a0, 42		#
-	syscall			# printf("%d", 42);
+	li	$v0,1
+	syscall
 
 	li	$v0, 11		# syscall 11: print_char
 	li	$a0, '\n'	# 
