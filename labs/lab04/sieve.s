@@ -45,7 +45,7 @@ loop2:
 	la	$t1,prime
 	add	$t1,$t1,$t2	
 	li	$t7,0	
-	sb	0, 0($t1)		# prime[j] = 0
+	sb	$t7, 0($t1)		# prime[j] = 0
 
 	add	$t2,$t2,$t0		# j += i
 	b	loop2			# branch to loop2
