@@ -182,7 +182,10 @@ seq_rand:
 seq_rand__prologue:
 	begin
 	push	$ra
+	push	$a0
+	li	$a0,100
 	jal	rand			# limit = rand(100)
+	pop	$a0
 	move	$s0,$v0			# s0 = limit
 	li	$s1,0			# i = 0
 seq_rand__body:
