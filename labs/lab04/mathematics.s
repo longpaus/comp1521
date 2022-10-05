@@ -33,11 +33,45 @@ main:
 
 main__prologue:
 	begin
-
-	# TODO: add code to set up your stack frame here 
+	push	$ra
 
 main__body:
-	# TODO: complete your function body here
+	li 	$v0,4
+	la	$a0,prompt_str
+	syscall
+
+	li	$v0,5
+	syscall
+	move 	$a0, $v0		# $a0 = random_seed
+
+	jal	seed_rand		# seed_rand(random_seed);
+
+	li	$a0,100
+	jal	rand			#rand(100)
+	move	$a0,$v0
+
+	jal	add_rand		# add_rand(value)
+	move	$a0,$v0
+
+	jal	sub_rand		# sub_rand(value)
+	move	$a0,$v0
+
+	jal	seq_rand		# seq_rand(value)
+	move	$a0,$v0
+
+	push	$a0
+
+	li	$v0,4
+	la	$a0,result_str
+	syscall
+
+	pop	$a0
+	li	$v0,1
+	syscall
+
+	li	$v0,11
+	li	$a0,'\n'
+	syscall
 
 main__epilogue:
 	# TODO: add code to clean up stack frame here
@@ -53,10 +87,10 @@ main__epilogue:
 add_rand:
 	# Args:
 	#   - $a0: int value
-	# Returns: int
+	# Returns: $v0 int
 	#
 	# Frame:	[...]
-	# Uses: 	[...]
+	# Uses: 	[$v0,$a0]
 	# Clobbers:	[...]
 	#
 	# Locals:
@@ -67,22 +101,23 @@ add_rand:
 	#     -> [prologue]
 	#     -> [body]
 	#     -> [epilogue]
+	
 
 add_rand__prologue:
 	begin
-
-	# TODO: add code to set up your stack frame here
+	push	$ra
 
 add_rand__body:
-
-	# TODO: complete your function body here
+	push	$a0
+	li	$a0,0xFFFF
+	jal	rand				# jump to r and save position to $ra
+	pop	$a0
+	add	$v0,$v0,$a0			# return value + rand(0xFFFF)
+	
 
 add_rand__epilogue:
-	
-	# TODO: add code to clean up stack frame here
-
+	pop 	$ra
 	end
-
 	jr	$ra
 
 
@@ -92,10 +127,10 @@ add_rand__epilogue:
 sub_rand:
 	# Args:
 	#   - $a0: int value
-	# Returns: int
+	# Returns: $v0: int
 	#
 	# Frame:	[...]
-	# Uses: 	[...]
+	# Uses: 	[$a0,$v0]
 	# Clobbers:	[...]
 	#
 	# Locals:
@@ -109,17 +144,16 @@ sub_rand:
 
 sub_rand__prologue:
 	begin
+	push	$ra
 
 	# TODO: add code to set up your stack frame here
 
 sub_rand__body:
-
-	# TODO: complete your function body here
+	jal	rand			# rand(value)
+	sub	$v0, $a0, $v0		# return  value - rand(value);
 
 sub_rand__epilogue:
-	
-	# TODO: add code to clean up stack frame here
-
+	pop	$ra
 	end
 
 	jr	$ra
@@ -137,8 +171,8 @@ seq_rand:
 	# Clobbers:	[...]
 	#
 	# Locals:
-	#   - ...
-	#
+	#   - $s0 : limit
+	#   - $s1 : i
 	# Structure:
 	#   - seq_rand
 	#     -> [prologue]
@@ -147,19 +181,21 @@ seq_rand:
 
 seq_rand__prologue:
 	begin
-
-	# TODO: add code to set up your stack frame here
-
+	push	$ra
+	jal	rand			# limit = rand(100)
+	move	$s0,$v0			# s0 = limit
+	li	$s1,0			# i = 0
 seq_rand__body:
-
-	# TODO: complete your function body here
+	bge	$s1,$s0,seq_rand__epilogue 	# if i >= limit goto epilogue
+	jal	add_rand
+	move	$a0,$v0			# value = add_rand
+	addi	$s1,$s1,1		# i++
+	b 	seq_rand__body		# branch to seq_rand__body
 
 seq_rand__epilogue:
 	
-	# TODO: add code to clean up stack frame here
-
+	pop	$ra
 	end
-	
 	jr	$ra
 
 
