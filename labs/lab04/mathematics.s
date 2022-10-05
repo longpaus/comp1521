@@ -75,7 +75,7 @@ main__body:
 
 main__epilogue:
 	# TODO: add code to clean up stack frame here
-
+	pop	$ra
 	end
 
 	li	$v0, 0
