@@ -12,7 +12,7 @@ main:
 slow_loop__init:
 	li	$t2, 0				# n_seen = 0;
 slow_loop__cond:
-	bge	$t2, ARRAY_LEN, slow_loop__end	# while (n_seen < ARRAY_LEN) {
+	bge	$t2, ARRAY_LEN, end	# while (n_seen < ARRAY_LEN) {
 
 slow_loop__body:
 	li	$v0, 4				#   syscall 4: print_string
@@ -29,7 +29,7 @@ checkLoop:
 	bge 	$t1,$t2,slow_loop__end		# if i >= n_seen goto checkLoopIter
 
 	mul	$t3,$t1,4
-	la	$a0,number
+	la	$a0,numbers
 	add	$a0,$a0,$t3
 	lw	$a0,0($a0)
 	beq	$t0, $a0, slow_loop__end	# if $t0 == $a0 then slow_loop__end
@@ -54,7 +54,7 @@ end:
 	syscall					# printf("10th different number was: ");
 
 	la	$t3,numbers
-	add	$t3,$t3,40
+	add	$t3,$t3,36
 	lw	$a0,0($t3)
 
 	li	$v0, 1				# syscall 1: print_int
