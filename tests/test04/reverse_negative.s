@@ -12,23 +12,43 @@ main:
 read_loop__init:
 	li	$t0, 0				# i = 0
 read_loop__cond:
-	bge	$t0, ARRAY_LEN, read_loop__end	# while (i < ARRAY_LEN) {
+	bge	$t0, ARRAY_LEN, print_loop	# while (i < ARRAY_LEN) {
 
 read_loop__body:
 	li	$v0, 5				#   syscall 5: read_int
 	syscall					#   scanf("%d", &x);
 
-	blt	$v0, 0, read_loop__end		#   if (x < 0) break;
+	blt	$v0, 0, print_loop		#   if (x < 0) break;
 
 	mul	$t1, $t0, 4			#   &numbers[i] = numbers + 4 * i
 	sw	$v0, numbers($t1)		#   numbers[i] = x
 
 	addi	$t0, $t0, 1			#   i++;
 	j	read_loop__cond			# }
-read_loop__end:
 
-	# TODO: add your code here!
+print_loop:
+	ble	$t0, 0, end			# if i <= 0 then end
+	addi	$t0, $t0, -1			# i--
+	
+	la	$t3,numbers
+	mul	$t2,$t0,4
+	add	$t3,$t3,$t2
+	lw	$t3, 0($t3)			# 
+	
+	move	$a0,$t3
+	li	$v0,4
+	syscall
+	li	$a0,'\n'
+	li	$v0,11
+	syscall
 
+	b 	print_loop
+	
+	
+	
+
+	
+end:
 	li	$v0, 0
 	jr	$ra				# return 0;
 
