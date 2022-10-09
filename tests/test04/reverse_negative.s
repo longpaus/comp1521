@@ -28,21 +28,20 @@ read_loop__body:
 
 print_loop:
 	ble	$t0, 0, end			# if i <= 0 then end
-	addi	$t0, $t0, -1			# i--
+	sub	$t0, $t0,1			# i--
 	
 	la	$t3,numbers
 	mul	$t2,$t0,4
 	add	$t3,$t3,$t2
-	lw	$t3, 0($t3)			# 
+	lw	$a0, 0($t3)			# 
 	
-	move	$a0,$t3
-	li	$v0,4
+	li	$v0,1
 	syscall
 	li	$a0,'\n'
 	li	$v0,11
 	syscall
 
-	b 	print_loop
+	 b 	print_loop
 	
 	
 	
