@@ -15,7 +15,7 @@ loop:
 	syscall				#
 	move	$t0, $v0		# scanf("%d", &x);
 
-	blt	$t0, 0, end		# if x < 0 goto end
+	bge	$t0, 0, end		# if x > 0 goto end
 
 	li	$v0, 4			# syscall 4: print_string
 	la	$a0, redo_str		#
