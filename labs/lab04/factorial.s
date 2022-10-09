@@ -99,15 +99,26 @@ factorial:
 	#     -> [epilogue]
 
 factorial__prologue:
-	
-	# TODO: set up your stack frame
+	li	$v0,1
+	ble 	$a0,1,negativeCase
+	begin
+	push	$ra
+	push	$a0
 
 factorial__body:
-	
-	# TODO: complete the function body
+	bgt 	$a0,1,recur
+	b 	factorial__epilogue
 
+recur:
+	addi	$a0,$a0,-1
+	jal	factorial
 factorial__epilogue:
-	
+	pop	$a0
+	mul	$v0,$v0,$a0
 	# TODO: clean up your stack frame
-
+	pop	$ra
+	end
 	jr	$ra
+	
+negativeCase:
+	jr 	$ra
