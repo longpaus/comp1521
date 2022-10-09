@@ -4,6 +4,9 @@ main:
 	# Registers:
 	#   - $t0: int x
 
+	
+
+loop:
 	li	$v0, 4			# syscall 4: print_string
 	la	$a0, prompt_str		#
 	syscall				# printf("Enter a number: ");
@@ -12,6 +15,19 @@ main:
 	syscall				#
 	move	$t0, $v0		# scanf("%d", &x);
 
+	blt	$t0, 0, end		# if x < 0 goto end
+
+	li	$v0, 4			# syscall 4: print_string
+	la	$a0, redo_str		#
+	syscall				# printf("Enter a positive number\n");
+	b	loop			# branch to loop
+	
+
+
+
+
+
+end:
 	li	$v0, 4			# syscall 4: print_string
 	la	$a0, result_str		#
 	syscall				# printf("You entered: ");
@@ -35,3 +51,6 @@ prompt_str:
 	.asciiz "Enter a number: "
 result_str:
 	.asciiz "You entered: "
+
+redo_str:
+	.asciiz "Enter a positive number\n"
