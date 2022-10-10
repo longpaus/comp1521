@@ -224,7 +224,7 @@ initialise_boards:
 	#   -> [epilogue]
 
 initialise_boards__prologue:
-
+	
 initialise_boards__body:
 	# TODO: add your code for the `initialise_boards` function here
 
@@ -246,8 +246,10 @@ initialise_board:
 	# Clobbers: [...]
 	#
 	# Locals:
-	#   - ...
-	#
+	#   - $s0 = row
+	#   - $s1 = col
+	#   - $s2 : tempory register
+	#   _ $t3 : tempory register
 	# Structure:
 	#   initialise_board
 	#   -> [prologue]
@@ -256,8 +258,29 @@ initialise_board:
 
 initialise_board__prologue:
 
+
 initialise_board__body:
-	# TODO: add your code for the `initialise_board` function here
+	li	$s0,0					# row = 0
+	b	init_board_Sloop			# branch to init_board_Sloop
+	
+init_board_Sloop:
+	bge 	$s0,BOARD_SIZE,initialise_board__epilogue # if row >= SIZE goto end
+	li	$s1,0					# col = 0
+
+init_board_Floop:
+	bge 	$s1,BOARD_SIZE,init_board_Sloop_iter	# while(col < BOARD_SIZE)
+	mul 	$s2,$s0,BOARD_SIZE			# s2 = size of byte between [0][0] and [row][0]
+	add 	$s3,$a0,$s2 				# s3 = &board[row][0]
+	add 	$s3,$s3,$s1 				# s3 = &board[row][col]
+	sb 	EMPTY,0($s3)				# board[row][col] = EMPTY;
+	addi 	$s1,$s1,1				# col++
+	b 	init_board_Floop
+
+
+init_board_Sloop_iter:
+	addi	$s0,$s0,1				# row++
+	b 	init_board_Sloop
+
 
 initialise_board__epilogue:
 	jr	$ra		# return;
