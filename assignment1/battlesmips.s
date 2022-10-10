@@ -262,7 +262,7 @@ initialise_board:
 	#   - $s0 = row
 	#   - $s1 = col
 	#   - $s2 : tempory register
-	#   _ $t3 : tempory register
+	#   - $t3 : tempory register
 	# Structure:
 	#   initialise_board
 	#   -> [prologue]
@@ -270,7 +270,10 @@ initialise_board:
 	#   -> [epilogue]
 
 initialise_board__prologue:
-
+	push	$s0
+	push	$s1
+	push	$s2
+	push	$s3
 
 initialise_board__body:
 	li	$s0,0					# row = 0
@@ -296,6 +299,10 @@ init_board_Sloop_iter:
 
 
 initialise_board__epilogue:
+	pop	$s0
+	pop	$s1
+	pop	$s2
+	pop	$s3
 	jr	$ra		# return;
 
 
