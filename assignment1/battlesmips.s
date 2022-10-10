@@ -292,7 +292,7 @@ init_board_Floop:
 	add 	$s3,$s3,$s1 				# s3 = &board[row][col]
 	la	$s4, EMPTY				
 	
-	sb 	EMPTY,0($s3)				# board[row][col] = EMPTY;
+	sb 	$s4,0($s3)				# board[row][col] = EMPTY;
 	addi 	$s1,$s1,1				# col++
 	b 	init_board_Floop
 
