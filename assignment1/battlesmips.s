@@ -303,11 +303,11 @@ init_board_Sloop_iter:
 
 
 initialise_board__epilogue:
-	pop	$s0
-	pop	$s1
-	pop	$s2
-	pop	$s3
 	pop	$s4
+	pop	$s3
+	pop	$s2
+	pop	$s1
+	pop	$s0
 	jr	$ra		# return;
 
 
@@ -470,8 +470,12 @@ is_overlapping:
 	# Clobbers: [...]
 	#
 	# Locals:
-	#   - ...
-	#
+	#   - $s0 = start.row
+	#   - $s1 = end.row
+	#   - $s2 = start.col
+	#   - $s3 = end.col
+	#   - $s4 = tempory register
+	#   - $s5 = tempory register
 	# Structure:
 	#   is_overlapping
 	#   -> [prologue]
@@ -479,11 +483,60 @@ is_overlapping:
 	#   -> [epilogue]
 
 is_overlapping__prologue:
-
+	push 	$s0
+	push	$s1
+	push 	$s2
+	push	$s3
+	push 	$s4
+	push 	$s5
 is_overlapping__body:
-	# TODO: add your code for the `is_overlapping` function here
+	li 	$v0,0
+	la	$s0,start
+	lw	$s0,0($s0)		# s0 = start.row
 
+	la	$s1,end	
+	lw 	$s1,0($s1) 		# s1 = end.row	
+
+	la	$s2,start
+	lw	$s2,4($s2)		# s2 = start.col
+
+	la	$s3,end
+	lw	$s3,4($s3)		# s3 = end.col
+
+	beq 	$s0,$s1,is_overlapping_hori 	# if (start.row == end.row)
+	
+	b 	is_overlapping_vert
+	
+
+is_overlapping_hori:
+	bgt 	$s2,$s3, is_overlapping__epilogue	# if col > end.col goto end
+	mul	$s5,$s0,BOARD_SIZE	# s5 = size from [0][0] to [start.row][0]
+	add	$s4,$a0,$s5 		# s4 = & board[start.row][0]
+	add 	$s4,$s4,$s2 		# s4 = &board[start.col][col]
+	lw 	$s4,0($s4)		# s4 = board[start.col][col]
+	bne 	$s4,EMPTY,overlapping
+	addi	$s2,$s2,1		# col++
+	b 	is_overlapping_hori
+
+is_overlapping_vert:
+	bgt 	$s0,$s1,is_overlapping__epilogue 	# if row > end.row goto end
+	mul	$s5,$s0,BOARD_SIZE	#s5 = size from [0][0] to [start.row][0]
+	add 	$s4,$a0,$s5		# s4 = & board[start.row][0]
+	lw	$s4,0($s4)		# s4 = board[start.col][col]
+	bne 	$s4,EMPTY,overlapping
+	addi 	$s0,$s0,1
+	b 	is_overlapping_vert
+
+overlapping:
+	li 	$v0,1
+	b 	is_overlapping__epilogue
 is_overlapping__epilogue:
+	pop 	$s5
+	pop	$s4
+	pop 	$s3
+	pop	$s2
+	pop 	$s1
+	pop 	$s0
 	jr	$ra		# return;
 
 
