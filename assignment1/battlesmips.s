@@ -414,14 +414,14 @@ is_coord_out_of_bounds:
 	#   - $a0: point_t *coord
 	#
 	# Returns:
-	#   - $v0: bool
+	#   - $v0: int (return 1 if true else 0)
 	#
 	# Frame:    [...]
 	# Uses:     [...]
 	# Clobbers: [...]
 	#
 	# Locals:
-	#   - ...
+	#   - $s0 = tempory register
 	#
 	# Structure:
 	#   is_coord_out_of_bounds
@@ -430,11 +430,28 @@ is_coord_out_of_bounds:
 	#   -> [epilogue]
 
 is_coord_out_of_bounds__prologue:
+	push	$s0
 
 is_coord_out_of_bounds__body:
-	# TODO: add your code for the `is_coord_out_of_bounds` function here
+	li	$v0,0
+	lw	$s0, 0($a0)		# s0 = coord->row
+	blt 	$s0,0,coord_out_of_bounds # if coord->row < 0 return true
+	bge 	$s0,BOARD_SIZE,coord_out_of_bounds
+
+	lw	$s0, 4($a0)		# s0 = coord->col
+	blt 	$s0,0,coord_out_of_bounds # if coord->col < 0 return true
+	bge 	$s0,BOARD_SIZE,coord_out_of_bounds
+
+	b 	is_coord_out_of_bounds__epilogue
+
+	
+
+coord_out_of_bounds:
+	li	$v0,1
+	b 	is_coord_out_of_bounds__epilogue
 
 is_coord_out_of_bounds__epilogue:
+	pop	$s0
 	jr	$ra		# return;
 
 
