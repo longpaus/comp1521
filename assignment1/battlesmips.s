@@ -224,11 +224,24 @@ initialise_boards:
 	#   -> [epilogue]
 
 initialise_boards__prologue:
-	
+	begin	
+	push	$ra
 initialise_boards__body:
-	# TODO: add your code for the `initialise_boards` function here
+	la	$a0,blue_board
+	jal	initialise_board
+
+	la	$a0,blue_view
+	jal 	initialise_board
+
+	la	$a0,red_board
+	jal 	initialise_board
+
+	la	$a0,red_view
+	jal 	initialise_board
 
 initialise_boards__epilogue:
+	pop 	$ra
+	end
 	jr	$ra		# return;
 
 
