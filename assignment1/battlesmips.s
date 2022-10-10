@@ -262,7 +262,8 @@ initialise_board:
 	#   - $s0 = row
 	#   - $s1 = col
 	#   - $s2 : tempory register
-	#   - $t3 : tempory register
+	#   - $s3 : tempory register
+	#   - $s4 = EMPTY
 	# Structure:
 	#   initialise_board
 	#   -> [prologue]
@@ -274,6 +275,7 @@ initialise_board__prologue:
 	push	$s1
 	push	$s2
 	push	$s3
+	push	$s4
 
 initialise_board__body:
 	li	$s0,0					# row = 0
@@ -288,6 +290,8 @@ init_board_Floop:
 	mul 	$s2,$s0,BOARD_SIZE			# s2 = size of byte between [0][0] and [row][0]
 	add 	$s3,$a0,$s2 				# s3 = &board[row][0]
 	add 	$s3,$s3,$s1 				# s3 = &board[row][col]
+	la	$s4, EMPTY				
+	
 	sb 	EMPTY,0($s3)				# board[row][col] = EMPTY;
 	addi 	$s1,$s1,1				# col++
 	b 	init_board_Floop
@@ -303,6 +307,7 @@ initialise_board__epilogue:
 	pop	$s1
 	pop	$s2
 	pop	$s3
+	pop	$s4
 	jr	$ra		# return;
 
 
