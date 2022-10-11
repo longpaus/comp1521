@@ -365,11 +365,55 @@ setup_board:
 	#   -> [epilogue]
 
 setup_board__prologue:
+	begin
+	push	$ra
 
 setup_board__body:
-	# TODO: add your code for the `setup_board` function here
+	push	$a0
+	move	$a0,$a1
+	li	$v0,4
+	syscall					# print player
+	la	$a0,place_ships_str
+	li	$v0,4
+	syscall					#  printf("%s, place your ships!\n", player);
+	pop	$a0
+	push	$a1
+
+	li	$a1,CARRIER_LEN
+	li	$a2,CARRIER_SYMBOL
+	jal	place_ship			#  place_ship(board, CARRIER_LEN, CARRIER_SYMBOL);
+
+	li	$a1,BATTLESHIP_LEN
+	li	$a2,BATTLESHIP_SYMBOL
+	jal	place_ship			# place_ship(board, BATTLESHIP_LEN, BATTLESHIP_SYMBOL);
+
+	li	$a1,DESTROYER_LEN
+	li	$a2,DESTROYER_SYMBOL
+	jal	place_ship			# place_ship(board, DESTROYER_LEN, DESTROYER_SYMBOL);
+
+	li	$a1,SUBMARINE_LEN
+	li	$a2,SUBMARINE_SYMBOL		
+	jal	place_ship			#   place_ship(board, SUBMARINE_LEN, SUBMARINE_SYMBOL);
+
+	li	$a1,PATROL_BOAT_LEN
+	li	$a2,PATROL_BOAT_SYMBOL
+	jal	place_ship			#  place_ship(board, PATROL_BOAT_LEN, PATROL_BOAT_SYMBOL); 
+
+	pop	$a1
+	push	$a0
+	move	$a0,$a1
+	li	$v0,4
+	syscall					# print player
+	la	$a0,your_final_board_str
+	li	$v0,4
+	syscall					# printf("%s, Your final board looks like:\n\n", player);
+	pop	$a0
+	jal	print_board			# print_board(board);
+
 
 setup_board__epilogue:
+	pop	$ra
+	end
 	jr	$ra		# return;
 
 
