@@ -389,8 +389,9 @@ place_ship:
 	# Clobbers: [...]
 	#
 	# Locals:
-	#   - ...
-	#
+	#   - $s0: temp register
+	#   - $s1: temp register
+	#   - $s2: temp register
 	# Structure:
 	#   place_ship
 	#   -> [prologue]
@@ -398,11 +399,180 @@ place_ship:
 	#   -> [epilogue]
 
 place_ship__prologue:
-
+	begin
+	push	$ra
+	push	$s0
+	push	$s1
+	push	$s2
 place_ship__body:
-	# TODO: add your code for the `place_ship` function here
+	push	$a0
+	la 	$a0,your_curr_board_str
+	li	$v0,4
+	syscall					#printf("Your current board:\n");
+
+	pop	$a0
+	jal 	print_board			#print_board(board);
+
+	push	$a0
+	la	$a0,ship_input_info_1_str
+	li	$v0,4
+	syscall					#Placing ship type 
+
+	move 	$a0,$a2
+	li	$v0,11
+	syscall					# print ship type
+
+	la	$a0,ship_input_info_2_str
+	li	$v0,4
+	syscall					# , with length 
+
+	move	$a0,$a1
+	li	$v0,1
+	syscall					# print ship len
+
+	la	$a0,ship_input_info_3_str
+	li	$v0,4
+	syscall					# .\n
+
+	la	$a0,enter_start_row_str
+	li	$v0,4
+	syscall					#printf("Enter starting row: ");
+
+	li	$v0,5				# scanf("%d", &start.row);
+	syscall
+	la	$s0,start
+	sw	$v0,0($s0)			
+
+	la	$a0,enter_start_col_str
+	li	$v0,4
+	syscall					#printf("Enter starting column: ");
+
+	li	$v0,5				# scanf("%d", &start.col);
+	syscall
+	la	$s0,start
+	sw	$v0,4($s0)			
+
+	la	$a0,start
+	jal	is_coord_out_of_bounds
+	beq	$v0,TRUE,place_ship_out_bounds	# is_coord_out_of_bounds(&start)
+
+	la	$a0,enter_direction_str
+	li	$v0,4
+	syscall					# printf("Enter direction (U, D, L, R): ");
+
+	li	$v0,12
+	syscall					# scanf(" %c", &direction_char);
+
+	move 	$s1,$a1				# s1 holds ship_len temporary
+	push	$a1
+	push 	$a2
+	
+	la	$s0,start
+	lw	$a0,0($s0)			# a0 = start.row
+
+	move	$a1,$v0				# a1 = direction_char
+	move	$a2,$s1				# a2 = ship_len
+
+	jal	get_end_row
+	la	$s0,end
+	sw	$v0,0($s0)			# end.row = get_end_row(start.row, direction_char, ship_len);
+
+	la	$s0,start
+	lw	$a0,4($s0)			# a0 = start.col
+
+	jal	get_end_col
+	la	$s0,end
+	sw	$v0,4($s0)			# end.col = get_end_col(start.col, direction_char, ship_len);
+
+	la	$a0,end
+
+	lw	$s0,0($a0)			# s0 = end.row
+	beq 	$s0,INVALID,place_ship_invalid_dir
+	lw	$s0,4($a0)			# s0 = end.col
+	beq	$s0,INVALID,place_ship_invalid_dir	#if (end.row == INVALID || end.col == INVALID)
+
+	jal	is_coord_out_of_bounds		#if (is_coord_out_of_bounds(&end))
+	beq	$v0,TRUE,place_ship_invalid_len
+
+	b 	place_ship_face_up
+
+place_ship_face_up:
+	la	$s0,start
+	lw	$s0,0($s0)			# s0 = start.row
+
+	la	$s1,end
+	lw	$s1,0($s1)			# s1 = end.row
+
+	ble 	$s0,$s1,place_ship_face_left	# if start.row <= end.row goto place_ship_face_left
+	la	$s2,start
+	sw 	$s1,0($s2)			# start.row = end.row
+	la	$s2,end
+	sw	$s0,0($s2)			# end.row = temp
+	b 	place_ship_face_left
+
+place_ship_face_left:
+	la	$s0,start
+	lw	$s0,4($s0)			# s0 = start.col
+
+	la	$s1,end
+	lw	$s1,4($s1)			# s1 = end.col
+
+	ble 	$s0,$s1,place_ship_is_overlapping
+	la	$s2,start
+	sw 	$s1,4($s2)			# start.col = end.col
+	la	$s2,end
+	sw	$s0,4($s2)			# end.col = temp
+	b 	place_ship_is_overlapping
+
+place_ship_is_overlapping:
+	pop	$a2
+	pop	$a1
+	pop	$a0
+	jal	is_overlapping
+	beq 	$v0,FALSE,place_ship__epilogue  # if !is_overlapping(board) then break
+	push	$a0
+	la	$a0,invalid_overlaps_str
+	li	$v0,4
+	syscall					# printf("Ship overlaps with another ship. Try again.\n");
+	pop 	$a0
+	b 	place_ship__body
+
+place_ship_invalid_len:
+	la	$a0,invalid_length_str
+	li	$v0,4
+	syscall					#  printf("Ship doesn't fit in this direction. Try again.\n");
+	pop	$a2
+	pop	$a1
+	pop	$a0
+	b 	place_ship__body		# continue
+
+place_ship_invalid_dir:
+	la	$a0,invalid_direction_str
+	li	$v0,4
+	syscall					# printf("Invalid direction. Try again.\n");
+	pop	$a2
+	pop	$a1
+	pop	$a0
+	b 	place_ship__body		# continue
+
+
+place_ship_out_bounds:
+	la	$a0,invalid_coords_out_bounds_str
+	li	$v0,4
+	syscall					#  printf("Coordinates out of bounds. Try again.\n");
+	pop	$a0
+	b 	place_ship__body		# continue
 
 place_ship__epilogue:
+	push	$a1
+	move	$a1,$a2				# a1 = ship_type
+	jal	place_ship_on_board
+	pop	$a1
+	pop	$s2
+	pop	$s1
+	pop	$s0
+	pop	$ra
+	end
 	jr	$ra		# return;
 
 
@@ -414,7 +584,7 @@ is_coord_out_of_bounds:
 	#   - $a0: point_t *coord
 	#
 	# Returns:
-	#   - $v0: int (return 1 if true else 0)
+	#   - $v0: bool (return 1 if true else 0)
 	#
 	# Frame:    [...]
 	# Uses:     [...]
@@ -433,7 +603,7 @@ is_coord_out_of_bounds__prologue:
 	push	$s0
 
 is_coord_out_of_bounds__body:
-	li	$v0,0
+	li	$v0,FALSE
 	lw	$s0, 0($a0)		# s0 = coord->row
 	blt 	$s0,0,coord_out_of_bounds # if coord->row < 0 return true
 	bge 	$s0,BOARD_SIZE,coord_out_of_bounds
@@ -447,7 +617,7 @@ is_coord_out_of_bounds__body:
 	
 
 coord_out_of_bounds:
-	li	$v0,1
+	li	$v0,TRUE
 	b 	is_coord_out_of_bounds__epilogue
 
 is_coord_out_of_bounds__epilogue:
@@ -490,7 +660,7 @@ is_overlapping__prologue:
 	push 	$s4
 	push 	$s5
 is_overlapping__body:
-	li 	$v0,0
+	li 	$v0,FALSE
 	la	$s0,start
 	lw	$s0,0($s0)		# s0 = start.row
 
@@ -514,6 +684,7 @@ is_overlapping_hori:
 	add	$s4,$a0,$s5 		# s4 = & board[start.row][0]
 	add 	$s4,$s4,$s2 		# s4 = &board[start.col][col]
 	lw 	$s4,0($s4)		# s4 = board[start.col][col]
+	# li 	$s5,EMPTY
 	bne 	$s4,EMPTY,overlapping
 	addi	$s2,$s2,1		# col++
 	b 	is_overlapping_hori
@@ -524,12 +695,13 @@ is_overlapping_vert:
 	add 	$s4,$a0,$s5		# s4 = & board[start.row][0]
 	add 	$s4,$s4,$s2		# s4 = board[start.row][start.col]
 	lw	$s4,0($s4)		# s4 = board[start.col][col]
+	# li	$s5,EMPTY
 	bne 	$s4,EMPTY,overlapping
 	addi 	$s0,$s0,1		# row++
 	b 	is_overlapping_vert
 
 overlapping:
-	li 	$v0,1
+	li 	$v0,TRUE
 	b 	is_overlapping__epilogue
 is_overlapping__epilogue:
 	pop 	$s5
