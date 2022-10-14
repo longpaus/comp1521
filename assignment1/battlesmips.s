@@ -192,7 +192,9 @@ main__prologue:
 	push	$ra		# | $ra
 
 main__body:
-	# TODO: add your code for the `main` function here
+	jal 	initialise_boards
+	jal	setup_boards
+	jal	play_game
 
 main__epilogue:
 	pop	$ra		# | $ra
