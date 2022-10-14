@@ -727,7 +727,7 @@ is_overlapping_hori:
 	mul	$s5,$s0,BOARD_SIZE	# s5 = size from [0][0] to [start.row][0]
 	add	$s4,$a0,$s5 		# s4 = & board[start.row][0]
 	add 	$s4,$s4,$s2 		# s4 = &board[start.col][col]
-	lw 	$s4,0($s4)		# s4 = board[start.col][col]
+	lb 	$s4,0($s4)		# s4 = board[start.col][col]
 	# li 	$s5,EMPTY
 	bne 	$s4,EMPTY,overlapping
 	addi	$s2,$s2,1		# col++
@@ -738,7 +738,7 @@ is_overlapping_vert:
 	mul	$s5,$s0,BOARD_SIZE	#s5 = size from [0][0] to [start.row][0]
 	add 	$s4,$a0,$s5		# s4 = & board[start.row][0]
 	add 	$s4,$s4,$s2		# s4 = board[start.row][start.col]
-	lw	$s4,0($s4)		# s4 = board[start.col][col]
+	lb	$s4,0($s4)		# s4 = board[start.col][col]
 	# li	$s5,EMPTY
 	bne 	$s4,EMPTY,overlapping
 	addi 	$s0,$s0,1		# row++
@@ -813,7 +813,7 @@ place_ship_on_board_hori:
 	mul	$s5,$s0,BOARD_SIZE	#s5 = size from [0][0] to [start.row][0]
 	add 	$s4,$a0,$s5		# s4 = & board[start.row][0]
 	add 	$s4,$s4,$s2		# s4 = board[start.row][col]
-	sw	$a1,0($s4)		# board[start.col][col] = ship_type
+	sb	$a1,0($s4)		# board[start.col][col] = ship_type
 	addi 	$s2,$s2,1		# col++
 	b 	place_ship_on_board_hori
 
@@ -822,7 +822,7 @@ place_ship_on_board_vert:
 	mul 	$s5,$s0,BOARD_SIZE	#s5 = size from [0][0] to [start.row][0]
 	add 	$s4,$a0,$s5		# s4 = & board[start.row][0]
 	add 	$s4,$s4,$s2		# s4 = board[start.row][col]
-	sw	$a1,0($s4)		# board[start.col][col] = ship_type
+	sb	$a1,0($s4)		# board[start.col][col] = ship_type
 	addi 	$s0,$s0,1		# row++
 	b 	place_ship_on_board_vert
 
