@@ -367,6 +367,7 @@ setup_board:
 setup_board__prologue:
 	begin
 	push	$ra
+	push	$s0
 
 setup_board__body:
 	push	$a0
@@ -417,6 +418,7 @@ setup_board__body:
 
 
 setup_board__epilogue:
+	pop	$s0
 	pop	$ra
 	end
 	jr	$ra		# return;
