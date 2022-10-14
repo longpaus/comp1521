@@ -333,11 +333,22 @@ setup_boards:
 	#   -> [epilogue]
 
 setup_boards__prologue:
-
+	begin
+	push	$ra
+	push	$a0
 setup_boards__body:
-	# TODO: add your code for the `setup_boards` function here
+	la	$a0,blue_board
+	la	$a1,blue_player_name_str
+	jal	setup_board
+
+	la	$a0,red_board
+	la	$a1,red_player_name_str
+	jal	setup_board
 
 setup_boards__epilogue:
+	pop	$a0
+	pop	$ra
+	end
 	jr	$ra		# return;
 
 
@@ -356,7 +367,7 @@ setup_board:
 	# Clobbers: [...]
 	#
 	# Locals:
-	#   - ...
+	#   - $s0 : store $a0
 	#
 	# Structure:
 	#   setup_board
