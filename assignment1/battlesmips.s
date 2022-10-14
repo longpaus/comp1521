@@ -381,22 +381,27 @@ setup_board__body:
 
 	li	$a1,CARRIER_LEN
 	li	$a2,CARRIER_SYMBOL
+	move	$s0,$a0
 	jal	place_ship			#  place_ship(board, CARRIER_LEN, CARRIER_SYMBOL);
 
 	li	$a1,BATTLESHIP_LEN
 	li	$a2,BATTLESHIP_SYMBOL
+	move	$a0,$s0
 	jal	place_ship			# place_ship(board, BATTLESHIP_LEN, BATTLESHIP_SYMBOL);
 
 	li	$a1,DESTROYER_LEN
 	li	$a2,DESTROYER_SYMBOL
+	move	$a0,$s0
 	jal	place_ship			# place_ship(board, DESTROYER_LEN, DESTROYER_SYMBOL);
 
 	li	$a1,SUBMARINE_LEN
 	li	$a2,SUBMARINE_SYMBOL		
+	move	$a0,$s0
 	jal	place_ship			#   place_ship(board, SUBMARINE_LEN, SUBMARINE_SYMBOL);
 
 	li	$a1,PATROL_BOAT_LEN
 	li	$a2,PATROL_BOAT_SYMBOL
+	move	$a0,$s0
 	jal	place_ship			#  place_ship(board, PATROL_BOAT_LEN, PATROL_BOAT_SYMBOL); 
 
 	pop	$a1
