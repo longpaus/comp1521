@@ -454,8 +454,11 @@ place_ship__body:
 	li	$v0,4
 	syscall					#printf("Your current board:\n");
 
+
 	pop	$a0
+	move	$s0,$a0
 	jal 	print_board			#print_board(board);
+	move	$a0,$s0
 
 	push	$a0
 	la	$a0,ship_input_info_1_str

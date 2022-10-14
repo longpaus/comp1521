@@ -158,7 +158,7 @@ void setup_board(char board[BOARD_SIZE][BOARD_SIZE],
     place_ship(board, BATTLESHIP_LEN, BATTLESHIP_SYMBOL);
     place_ship(board, DESTROYER_LEN, DESTROYER_SYMBOL);
     place_ship(board, SUBMARINE_LEN, SUBMARINE_SYMBOL);
-    place_ship(board, PATROL_BOAT_LEN, PATROL_BOAT_SYMBOL);
+    place_ship(board, PATROL_BOAT_LEN, PATROL_BOAT_SYMBOL); 
 
     printf("%s, Your final board looks like:\n\n", player);
 

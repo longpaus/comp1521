@@ -1,12 +1,15 @@
 #include <stdio.h>
-void two(int i);
+
 
 int main(void) {
-	two(1);
-}
-void two(int i) {
-	if (i < 1000000) {
-		two(2 * i);
+	int i = 0;
+	while(i < 5){
+		printf("hello\n");
+		if(5>2){
+			printf("d\n");
+			// continue;
+		}
+		printf("yo");
+		i++;
 	}
-	printf("%d\n", i);
 }
