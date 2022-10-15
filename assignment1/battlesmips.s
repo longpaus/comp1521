@@ -873,7 +873,7 @@ play_game:
 	# Clobbers: [...]
 	#
 	# Locals:
-	#   - ...
+	#   - $s0 : winner
 	#
 	# Structure:
 	#   play_game
@@ -882,11 +882,41 @@ play_game:
 	#   -> [epilogue]
 
 play_game__prologue:
+	begin
+	push	$ra
+	push	$s0
 
-play_game__body:
-	# TODO: add your code for the `play_game` function here
+play_game__body1:
+	li	$s0,WINNER_NONE			# s0 = winner
+
+play_game_loop:
+	bne 	$s0,WINNER_NONE,play_game__body2
+	jal	play_turn
+	jal	check_winner
+	move	$s0,$v0
+	b 	play_game_loop
+
+play_game__body2:
+	beq 	$s0,WINNER_RED,play_game_red_win
+	b 	play_game_blue_win
+
+play_game_blue_win:
+	la	$a0,blue_wins_str
+	li	$v0,4
+	syscall
+	b 	play_game__epilogue
+
+play_game_red_win:
+	la	$a0,red_wins_str
+	li	$v0,4
+	syscall
+	b 	play_game__epilogue
+
 
 play_game__epilogue:
+	pop	$s0
+	pop	$ra
+	end
 	jr	$ra		# return;
 
 
