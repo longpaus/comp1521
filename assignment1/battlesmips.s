@@ -1153,8 +1153,10 @@ check_player_win:
 	# Clobbers: [...]
 	#
 	# Locals:
-	#   - ...
-	#
+	#   - $s0 : row
+	#   - $s1 : col
+	#   - $s2 : size from [0][0] to [row][0] in an array
+	#   - $s3 : temp register
 	# Structure:
 	#   check_player_win
 	#   -> [prologue]
@@ -1162,11 +1164,56 @@ check_player_win:
 	#   -> [epilogue]
 
 check_player_win__prologue:
+	push	$s0
+	push	$s1
+	push	$s2
+	push	$s3
+check_player_win_sLoop_init:
+	li	$v0,TRUE
+	li	$s0,0				# row = 0
 
-check_player_win__body:
-	# TODO: add your code for the `check_player_win` function here
+check_player_win_sLoop_cond:
+	bge	$s0, BOARD_SIZE,check_player_win__epilogue
+	b 	check_player_win_sLoop_body
+
+check_player_win_sLoop_body:
+	li	$s1,0				# col = 0
+	b 	check_player_win_fLoop_cond
+
+check_player_win_fLoop_cond:
+	bge 	$s1,BOARD_SIZE,check_player_win_sLoop_iter
+	b 	check_player_win_fLoop_body
+
+check_player_win_fLoop_body:
+	mul 	$s2,$s0,BOARD_SIZE		# s2 = size from [0][0] to [row][0]
+	add	$s3,$a0,$s2			# s3 = &their_board[row][0]
+	add	$s3,$s3,$s1
+	lb 	$s3,0($s3)			# s3 = &their_board[row][col]			
+	beq	$s3,EMPTY,check_player_win_fLoop_iter	# if their_board[row][col] == EMPTY goto iter
+
+	add	$s3,$a1,$s2			# s3 = &our_view[row][0]
+	add	$s3,$s3,$s1
+	lb 	$s3,0($s3)			# s3 = our_view[row][col]
+	bne 	$s3,EMPTY,check_player_win_fLoop_iter	# if our_view[row][col] != EMPTY goto iter
+
+	li	$v0,FALSE
+	b 	check_player_win__epilogue
+
+
+check_player_win_sLoop_iter:
+	addi	$s0,$s0,1			# row++
+	b 	check_player_win_sLoop_cond
+
+check_player_win_fLoop_iter:
+	addi 	$s1,$s1,1			# col++
+	b 	check_player_win_fLoop_cond
+
 
 check_player_win__epilogue:
+	pop	$s3
+	pop	$s2
+	pop	$s1
+	pop	$s0
 	jr	$ra		# return;
 
 
