@@ -903,8 +903,8 @@ play_turn:
 	# Clobbers: [...]
 	#
 	# Locals:
-	#   - ...
-	#
+	#   - $s0 : whose_turn
+	#   - $s1 : hit_status
 	# Structure:
 	#   play_turn
 	#   -> [prologue]
@@ -912,11 +912,114 @@ play_turn:
 	#   -> [epilogue]
 
 play_turn__prologue:
+	begin
+	push	$ra
+	push	$s0
+	push 	$s1
 
-play_turn__body:
-	# TODO: add your code for the `play_turn` function here
+play_turn__body1:
+	la	$s0,whose_turn
+	lb	$s0,0($s0)			# s0 = whose_turn
+	beq 	$s0,BLUE,play_turn_blue_turn
+	b	play_turn_red_turn		# branch to play_turn_red_turn
+		
+
+play_turn__body2:
+	la	$a0,enter_row_target_str
+	li	$v0,4
+	syscall					#  printf("Please enter the row for your target: ");
+	li	$v0,5	
+	syscall					
+	la	$s0,target
+	sw 	$v0,0($s0)			# scanf("%d", &target.row);
+
+	la	$a0,enter_col_target_str
+	li	$v0,4
+	syscall					# printf("Please enter the column for your target: ");
+	li	$v0,5
+	syscall
+	la	$s0,target
+	sw	$v0,4($s0)			# scanf("%d", &target.col);
+
+	la	$a0,target
+	jal	is_coord_out_of_bounds
+	beq 	$v0,TRUE,play_turn_out_bounds
+
+	la	$s0,whose_turn
+	lb	$s0,0($s0)			# s0 = whose_turn
+
+	beq 	$s0,BLUE,play_turn_blue_turn2
+	b 	play_turn_red_turn2
+
+play_turn__body3:
+	beq	$s1,INVALID,play_turn_hit_stat_inval
+	beq 	$s1,HIT,play_turn_hit_stat_hit
+
+	la	$a0,you_missed_str
+	li	$v0,4
+	syscall					# printf("Miss!\n");
+
+	jal	swap_turn
+	b 	play_game__epilogue
+
+
+play_turn_hit_stat_hit:
+	la	$a0,hit_successful_str
+	li	$v0,4
+	syscall					#  printf("Successful hit!\n");
+	b 	play_turn__epilogue
+
+
+play_turn_hit_stat_inval:
+	la 	$a0,invalid_coords_already_hit_str
+	li	$v0,4
+	syscall					# printf("You've already hit this target. Try again.\n");
+	b 	play_turn__epilogue
+
+play_turn_red_turn2:
+	la	$a0,blue_board
+	la	$a1,red_view
+	jal	perform_hit
+	move	$s1,$v0				# s1 = hit_status
+	b 	play_turn__body3
+
+play_turn_blue_turn2:
+	la	$a0,red_board
+	la	$a1,blue_view
+	jal	perform_hit
+	move	$s1,$v0				# s1 = hit_status
+	b 	play_turn__body3
+
+play_turn_out_bounds:
+	la	$a0,invalid_coords_out_bounds_str
+	li	$v0,4
+	syscall					#  printf("Coordinates out of bounds. Try again.\n");
+	b 	play_turn__epilogue
+
+
+play_turn_red_turn:
+	la	$a0,red_turn_str
+	li	$v0,4
+	syscall
+	la	$a0,red_view
+	jal	print_board
+	b 	play_turn__body2
+
+play_turn_blue_turn:
+	la	$a0,blue_turn_str
+	li	$v0,4
+	syscall
+	la	$a0,blue_view
+	jal	print_board
+	b 	play_turn__body2
+
+
 
 play_turn__epilogue:
+	pop	$s1
+	pop	$s0
+	pop	$ra
+	end
 	jr	$ra		# return 0;
 
 
