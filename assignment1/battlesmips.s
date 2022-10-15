@@ -1129,11 +1129,34 @@ check_winner:
 	#   -> [epilogue]
 
 check_winner__prologue:
+	begin
+	push	$ra
 
 check_winner__body:
-	# TODO: add your code for the `check_winner` function here
+	la 	$a0,red_board
+	la	$a1,blue_view
+	jal	check_player_win
+	beq	$v0,TRUE,check_winner_blue_win
+
+	la	$a0,blue_board
+	la	$a1,red_view
+	jal	check_player_win
+	beq 	$v0,TRUE,check_winner_red_win
+
+	li 	$v0,WINNER_NONE
+	b 	check_winner__epilogue
+
+check_winner_red_win:
+	li	$v0,WINNER_RED
+	b 	check_winner__epilogue
+
+check_winner_blue_win:
+	li	$v0,WINNER_BLUE
+	b 	check_winner__epilogue
 
 check_winner__epilogue:
+	pop	$ra
+	end
 	jr	$ra		# return;
 
 
