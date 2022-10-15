@@ -936,7 +936,13 @@ perform_hit:
 	# Clobbers: [...]
 	#
 	# Locals:
-	#   - ...
+	#   - $s0 : temp register
+	#   - $s1 : target.row
+	#   - $s2 : target.col
+	#   - $s3 : our_view[target.row][target.col]
+	#   - $s4 : temp register
+	#   - $s5 : their_board[target.row][target.col]
+	#   - $s6 : temp register
 	#
 	# Structure:
 	#   perform_hit
@@ -945,11 +951,55 @@ perform_hit:
 	#   -> [epilogue]
 
 perform_hit__prologue:
+	push 	$s0
+	push	$s1
+	push 	$s2
+	push	$s3
+	push 	$s4
+	push 	$s5
+	push	$s6
 
 perform_hit__body:
-	# TODO: add your code for the `perform_hit` function here
+	la	$s0,target
+	lw	$s1,0($s0)			# s1 = target.row
+	lw	$s2,4($s0)			# s2 = target.col
+
+	mul	$s0,$s1,BOARD_SIZE
+	add	$s0,$a1,$s0			# s0 = &our_view[target.row][0]
+	add	$s0,$s0,$s2			# s0 = &our_view[target.row][target.col]
+	lb	$s3,0($s0)			# s3 = our_view[target.row][target.col]
+	bne 	$s3,EMPTY,perform_hit_invalid
+
+	mul	$s4,$s1,BOARD_SIZE
+	add	$s4,$s4,$a0			# s4 = &their_board[target.row][0]
+	add	$s4,$s4,$s2			# s4 = &their_board[target.row][target.col]
+	lb	$s5,0($s4)			# s5 = their_board[target.row][target.col]
+	bne 	$s5,EMPTY,perform_hit_hit
+
+	li	$s6,MISS
+	sb	$s6,0($s0)			# our_view[target.row][target.col] = MISS;
+	li	$v0,MISS
+	b 	perform_hit__epilogue
+
+perform_hit_invalid:
+	li	$v0,INVALID
+	b 	perform_hit__epilogue
+
+perform_hit_hit:
+	li	$s6,HIT
+	sb	$s6,0($s0)			# our_view[target.row][target.col] = HIT;
+	li	$v0,HIT
+	b	perform_hit__epilogue
+
 
 perform_hit__epilogue:
+	pop 	$s6
+	pop 	$s5
+	pop 	$s4
+	pop 	$s3
+	pop 	$s2
+	pop 	$s1
+	pop 	$s0
 	jr	$ra		# return;
 
 
