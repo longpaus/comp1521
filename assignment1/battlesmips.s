@@ -273,6 +273,8 @@ initialise_board:
 	#   -> [epilogue]
 
 initialise_board__prologue:
+	begin
+	push 	$ra
 	push	$s0
 	push	$s1
 	push	$s2
@@ -310,6 +312,8 @@ initialise_board__epilogue:
 	pop	$s2
 	pop	$s1
 	pop	$s0
+	pop	$ra
+	end
 	jr	$ra		# return;
 
 
@@ -667,6 +671,8 @@ is_coord_out_of_bounds:
 	#   -> [epilogue]
 
 is_coord_out_of_bounds__prologue:
+	begin
+	push	$ra
 	push	$s0
 
 is_coord_out_of_bounds__body:
@@ -689,6 +695,8 @@ coord_out_of_bounds:
 
 is_coord_out_of_bounds__epilogue:
 	pop	$s0
+	pop	$ra
+	end
 	jr	$ra		# return;
 
 
@@ -720,6 +728,8 @@ is_overlapping:
 	#   -> [epilogue]
 
 is_overlapping__prologue:
+	begin
+	push	$ra
 	push 	$s0
 	push	$s1
 	push 	$s2
@@ -777,6 +787,8 @@ is_overlapping__epilogue:
 	pop	$s2
 	pop 	$s1
 	pop 	$s0
+	pop	$ra
+	end
 	jr	$ra		# return;
 
 
@@ -808,6 +820,8 @@ place_ship_on_board:
 	#   -> [epilogue]
 
 place_ship_on_board__prologue:
+	begin
+	push	$ra
 	push 	$s0
 	push	$s1
 	push 	$s2
@@ -857,6 +871,8 @@ place_ship_on_board__epilogue:
 	pop	$s2
 	pop 	$s1
 	pop 	$s0
+	pop	$ra
+	end
 	jr	$ra		# return;
 
 
@@ -1084,6 +1100,8 @@ perform_hit:
 	#   -> [epilogue]
 
 perform_hit__prologue:
+	begin
+	push	$ra
 	push 	$s0
 	push	$s1
 	push 	$s2
@@ -1133,6 +1151,8 @@ perform_hit__epilogue:
 	pop 	$s2
 	pop 	$s1
 	pop 	$s0
+	pop	$ra
+	end
 	jr	$ra		# return;
 
 
@@ -1217,6 +1237,8 @@ check_player_win:
 	#   -> [epilogue]
 
 check_player_win__prologue:
+	begin
+	push	$ra
 	push	$s0
 	push	$s1
 	push	$s2
@@ -1267,6 +1289,8 @@ check_player_win__epilogue:
 	pop	$s2
 	pop	$s1
 	pop	$s0
+	pop	$ra
+	end
 	jr	$ra		# return;
 
 
