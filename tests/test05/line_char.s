@@ -19,9 +19,7 @@ main:
 	la	$a1, LINE_LEN		#
 	syscall				# fgets(buffer, LINE_LEN, stdin)
 
-	move	$a0,$v0
-	li	$v0,4
-	syscall
+	
 
 
 
@@ -42,11 +40,11 @@ main:
 	la	$t1,line
 	add 	$t2,$t1,$t0
 
-	lb 	$a0,0($t2)
-	li	$v0,1
+	lb 	$a0,($t2)
+	li	$v0,11
 	syscall
 
-	li 	$a0,' '
+	li 	$a0,'\n'
 	li	$v0,11
 	syscall
 
