@@ -36,7 +36,7 @@ main:
 	la	$t1,line
 	add 	$t2,$t1,$t0
 
-	move	$a0,$t2
+	lb 	$a0,0($t2)
 	li	$v0,1
 	syscall
 
