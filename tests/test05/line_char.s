@@ -33,15 +33,16 @@ main:
 
 	# TODO: modify the following to print the character in the nth-position
 
-	li	$v0, 11			# syscall 11: print_char
-	li	$a0, '?'		#
-	syscall				# putchar('?');
+	la	$t1,line
+	add 	$t2,$t1,$t0
 
-	# You shouldn't need to modify anything below here.
+	move	$a0,$t2
+	li	$v0,1
+	syscall
 
-	li	$v0, 11			# syscall 11: print_char
-	li	$a0, '\n'		#
-	syscall				# putchar('\n');
+	li 	$a0,' '
+	li	$v0,11
+	syscall
 
 	li	$v0, 0
 	jr	$ra			# return 0;
