@@ -19,6 +19,12 @@ main:
 	la	$a1, LINE_LEN		#
 	syscall				# fgets(buffer, LINE_LEN, stdin)
 
+	move	$a0,$v0
+	li	$v0,4
+	syscall
+
+
+
 	li	$v0, 4			# syscall 4: print_string
 	la	$a0, pos_prompt_str	#
 	syscall				# printf("Enter a position: ");
