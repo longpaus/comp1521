@@ -6,7 +6,7 @@ LINE_LEN = 256
 # .TEXT <main>
 main:
 	# Locals:
-	#   - ...
+	#   - t0 = i
 
 	li	$v0, 4			# syscall 4: print_string
 	la	$a0, line_prompt_str	#
@@ -17,13 +17,27 @@ main:
 	la	$a1, LINE_LEN		#
 	syscall				# fgets(buffer, LINE_LEN, stdin)
 
+	
+
+	li	$t0,1			# t0 = i
+	li	$t1,1
+loop:	
+	beq 	$t1,0,end
+
+	la	$t1,line
+	add	$t1,$t1,$t0
+	lb	$t1,0($t1)		# t1 = line[i]
+
+	addi 	$t0,$t0,1		# i++
+
+end:
 	li	$v0, 4			# syscall 4: print_string
 	la	$a0, result_str		#
 	syscall				# printf("Line length: ");
 
-	li	$v0, 1			# syscall 1: print_int
-	li	$a0, 42			# 		
-	syscall				# printf("%d", 42);
+	move	$a0,$t0
+	li	$v0,1
+	syscall
 
 	li	$v0, 11			# syscall 11: print_char
 	li	$a0, '\n'		#
