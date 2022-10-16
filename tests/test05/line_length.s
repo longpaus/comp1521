@@ -19,7 +19,7 @@ main:
 
 	
 
-	li	$t0,1			# t0 = i
+	li	$t0,0			# t0 = i
 	li	$t1,1
 loop:	
 	beq 	$t1,0,end
@@ -29,12 +29,15 @@ loop:
 	lb	$t1,0($t1)		# t1 = line[i]
 
 	addi 	$t0,$t0,1		# i++
+	b	loop			# branch to loop
+	
 
 end:
 	li	$v0, 4			# syscall 4: print_string
 	la	$a0, result_str		#
 	syscall				# printf("Line length: ");
 
+	addi 	$t0,$t0,-1
 	move	$a0,$t0
 	li	$v0,1
 	syscall
