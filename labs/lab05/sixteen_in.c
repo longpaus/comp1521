@@ -23,12 +23,19 @@ int main(int argc, char *argv[]) {
 // return the corresponding signed 16 bit integer
 //
 int16_t sixteen_in(char *bits) {
-    int16_t n = 1;
+    int16_t n = 0;
     for(int i = 0; i < N_BITS ;i++){
         int bitValue = (bits[i] == '1') ? 1 : 0;
         n |= bitValue;
-        n = n << 1;
+        if(i != N_BITS -1)
+            n = n << 1;
     }
-    return n >> 1;
+    // if (bits[0] == '1') {
+    //     printf("n = %d \n",(int)n);
+    //     n = -1 & n;
+    //     printf("n = %d \n",(int)n);
+    // }
+
+    return n;
 }
 
