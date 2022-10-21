@@ -30,12 +30,6 @@ int16_t sixteen_in(char *bits) {
         if(i != N_BITS -1)
             n = n << 1;
     }
-    // if (bits[0] == '1') {
-    //     printf("n = %d \n",(int)n);
-    //     n = -1 & n;
-    //     printf("n = %d \n",(int)n);
-    // }
-
     return n;
 }
 
