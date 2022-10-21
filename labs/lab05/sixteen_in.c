@@ -28,7 +28,7 @@ int16_t sixteen_in(char *bits) {
         int bitValue = (bits[i] == '1') ? 1 : 0;
         n |= bitValue;
         if(i != N_BITS -1)
-            n = n << 1;
+            n <<= 1;
     }
     return n;
 }
