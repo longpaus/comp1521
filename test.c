@@ -2,7 +2,9 @@
 
 
 int main(void) {
-	u_int8_t i = 5 << 2;
-	printf("%u",i);
+	int16_t i = 1;
+	int n = 3 & i;
+		
+	printf("%u",n);
 
 }
