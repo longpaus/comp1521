@@ -24,7 +24,14 @@ int main(int argc, char *argv[]) {
 // return the corresponding integer
 uint32_t packed_bcd(uint32_t packed_bcd_value) {
 
-    // PUT YOUR CODE HERE
+    int result=0;
+    int i=1;
+    while(packed_bcd_value > 0){
+        result += (packed_bcd_value & 0x0F)*i;
+        packed_bcd_value >>= 4;       
+        i=i*10;       
+    }
+    return result;
 
     return 0;
 }
