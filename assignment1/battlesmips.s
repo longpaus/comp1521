@@ -10,7 +10,7 @@
 # !!! IMPORTANT !!!
 #
 # A simplified implementation of the classic board game battleship!
-# This program was written by <YOUR-NAME-HERE> (YOUR-ZID-HERE)
+# This program was written by <long pham> (z5417369)
 # on DATE-FINISHED-HERE
 #
 # Version 1.0 (2022/10/04): Team COMP1521 <cs1521@cse.unsw.edu.au>
@@ -212,7 +212,7 @@ initialise_boards:
 	#
 	# Returns:  void
 	#
-	# Frame:    [...]
+	# Frame:    [$ra]
 	# Uses:     [...]
 	# Clobbers: [...]
 	#
@@ -256,7 +256,7 @@ initialise_board:
 	#
 	# Returns:  void
 	#
-	# Frame:    [...]
+	# Frame:    [$ra,$s0,$s1,$s2,$s3,$s4]
 	# Uses:     [...]
 	# Clobbers: [...]
 	#
@@ -270,6 +270,9 @@ initialise_board:
 	#   initialise_board
 	#   -> [prologue]
 	#   -> body
+	# 	-> init_Sloop
+	# 	-> init_Floop
+	# 	-> Slow_loop_iter
 	#   -> [epilogue]
 
 initialise_board__prologue:
@@ -325,7 +328,7 @@ setup_boards:
 	#
 	# Returns:  void
 	#
-	# Frame:    [...]
+	# Frame:    [$ra,$a0]
 	# Uses:     [...]
 	# Clobbers: [...]
 	#
@@ -368,7 +371,7 @@ setup_board:
 	#
 	# Returns:  void
 	#
-	# Frame:    [...]
+	# Frame:    [$ra,$a0]
 	# Uses:     [...]
 	# Clobbers: [...]
 	#
@@ -452,7 +455,7 @@ place_ship:
 	#
 	# Returns:  void
 	#
-	# Frame:    [...]
+	# Frame:    [$ra,$a0,$a1,$a2]
 	# Uses:     [...]
 	# Clobbers: [...]
 	#
@@ -464,6 +467,12 @@ place_ship:
 	#   place_ship
 	#   -> [prologue]
 	#   -> body
+	#	-> out_bounds
+	#	-> invalid_dir
+	#	-> invalid_len
+	#	-> face_up
+	#	-> face left
+	# 	-> is_overlapping
 	#   -> [epilogue]
 
 place_ship__prologue:
@@ -657,7 +666,7 @@ is_coord_out_of_bounds:
 	# Returns:
 	#   - $v0: bool (return 1 if true else 0)
 	#
-	# Frame:    [...]
+	# Frame:    [$ra,$s0]
 	# Uses:     [...]
 	# Clobbers: [...]
 	#
@@ -668,6 +677,7 @@ is_coord_out_of_bounds:
 	#   is_coord_out_of_bounds
 	#   -> [prologue]
 	#   -> body
+	#	-> out_bounds
 	#   -> [epilogue]
 
 is_coord_out_of_bounds__prologue:
@@ -710,7 +720,7 @@ is_overlapping:
 	# Returns:
 	#   - $v0: bool
 	#
-	# Frame:    [...]
+	# Frame:    [$ra]
 	# Uses:     [...]
 	# Clobbers: [...]
 	#
@@ -725,6 +735,9 @@ is_overlapping:
 	#   is_overlapping
 	#   -> [prologue]
 	#   -> body
+	#	-> hori
+	#	-> vert
+	#		-> overlapping
 	#   -> [epilogue]
 
 is_overlapping__prologue:
@@ -802,7 +815,7 @@ place_ship_on_board:
 	#
 	# Returns:  void
 	#
-	# Frame:    [...]
+	# Frame:    [$ra]
 	# Uses:     [...]
 	# Clobbers: [...]
 	#
@@ -817,6 +830,8 @@ place_ship_on_board:
 	#   place_ship_on_board
 	#   -> [prologue]
 	#   -> body
+	#	-> hori
+	#	-> vert
 	#   -> [epilogue]
 
 place_ship_on_board__prologue:
@@ -884,8 +899,8 @@ play_game:
 	#
 	# Returns:  void
 	#
-	# Frame:    [...]
-	# Uses:     [...]
+	# Frame:    [$ra]
+	# Uses:     [$a0]
 	# Clobbers: [...]
 	#
 	# Locals:
@@ -894,7 +909,11 @@ play_game:
 	# Structure:
 	#   play_game
 	#   -> [prologue]
-	#   -> body
+	#   -> body1
+	#   -> loop
+	#   -> body2
+	#	-> blue_win
+	#	-> red_win
 	#   -> [epilogue]
 
 play_game__prologue:
@@ -944,7 +963,7 @@ play_turn:
 	#
 	# Returns:  void
 	#
-	# Frame:    [...]
+	# Frame:    [$ra]
 	# Uses:     [...]
 	# Clobbers: [...]
 	#
@@ -954,7 +973,16 @@ play_turn:
 	# Structure:
 	#   play_turn
 	#   -> [prologue]
-	#   -> body
+	#   -> body1
+	#	->red_turn
+	#	-> blue_turn
+	#   -> body2
+	#	-> out_bounds
+	#	-> blue_turn2
+	#	->red_turn2
+	#   -> body3
+	#	-> hit_stat_inval
+	#	-> hit_stat_hit
 	#   -> [epilogue]
 
 play_turn__prologue:
@@ -1080,7 +1108,7 @@ perform_hit:
 	# Returns:
 	#   - $v0: int
 	#
-	# Frame:    [...]
+	# Frame:    [$ra]
 	# Uses:     [...]
 	# Clobbers: [...]
 	#
@@ -1097,6 +1125,8 @@ perform_hit:
 	#   perform_hit
 	#   -> [prologue]
 	#   -> body
+	#	->invalid
+	#	->hit
 	#   -> [epilogue]
 
 perform_hit__prologue:
@@ -1165,7 +1195,7 @@ check_winner:
 	# Returns:
 	#   - $v0: int
 	#
-	# Frame:    [...]
+	# Frame:    [$ra]
 	# Uses:     [...]
 	# Clobbers: [...]
 	#
@@ -1176,6 +1206,8 @@ check_winner:
 	#   check_winner
 	#   -> [prologue]
 	#   -> body
+	#	-> red_win
+	#	-> blue_win
 	#   -> [epilogue]
 
 check_winner__prologue:
@@ -1221,7 +1253,7 @@ check_player_win:
 	# Returns:
 	#   - $v0: int
 	#
-	# Frame:    [...]
+	# Frame:    [$ra]
 	# Uses:     [...]
 	# Clobbers: [...]
 	#
@@ -1233,7 +1265,14 @@ check_player_win:
 	# Structure:
 	#   check_player_win
 	#   -> [prologue]
-	#   -> body
+	#   -> sLoop_init
+	#   -> sLoop_cond
+	#	-> epilogue
+	#   -> sLoop_body
+	#	-> fLoop_cond
+	#		-> sLoop_iter
+	#		-> fLoop_body
+	#			-> sLoop_iter
 	#   -> [epilogue]
 
 check_player_win__prologue:
