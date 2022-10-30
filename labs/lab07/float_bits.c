@@ -50,7 +50,7 @@ int is_zero(float_components_t f) {
     // PUT YOUR CODE HERE
 
     if(f.fraction == 0 && f.exponent == 0){
-        return (f.exponent == 1) ? -0 : 0;
+        return 1;
     }
     return 0;
 }
