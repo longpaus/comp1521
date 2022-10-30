@@ -70,7 +70,7 @@ uint32_t float_2048(uint32_t f) {
         return(((0 | 0xff) << 1) | 1) << 22;
     }
     if(is_zero(com) == 1){
-        return (com.sign == 1) ? 1 << 31 : 0;
+        return (com.sign == 1) ? (uint32_t)1 << 31 : 0;
     }
     uint32_t mask = (1 << 23) - 1;
     uint32_t fraction = f & mask; // fraction contains first 23 bits of f
