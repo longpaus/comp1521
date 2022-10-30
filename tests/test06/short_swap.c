@@ -6,7 +6,6 @@
 
 // given uint16_t value return the value with its bytes swapped
 uint16_t short_swap(uint16_t value) {
-    // PUT YOUR CODE HERE
-
-    return 42;
+    value = ((value << 8) & 0xff00) | ((value >> 8) & 0x00ff);
+    return value;
 }
