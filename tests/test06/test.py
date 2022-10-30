@@ -1,4 +1,6 @@
+#!/usr/bin/env python3
 import binascii
 
 
-print(f'{0xff00:0>16b}');
+
+print(f'{0xFF:0>16b}');

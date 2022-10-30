@@ -9,31 +9,39 @@
 
 // separate out the 3 components of a float
 float_components_t float_bits(uint32_t f) {
-    // PUT YOUR CODE HERE
+    float_components_t components;
+    uint32_t mask = (1 << 23) - 1;
+    components.fraction = f & mask;
+    f >>= 23;
+    mask = (1 << 8) - 1;
+    components.exponent = f & mask;
+    f >>= 8;
+    components.sign = f | 0;
+    return components;
 }
 
 // given the 3 components of a float
 // return 1 if it is NaN, 0 otherwise
 int is_nan(float_components_t f) {
-    // PUT YOUR CODE HERE
-
-    return 42;
+    return (f.fraction >> 22 && f.exponent == 0xff) ? 1 : 0;
 }
 
 // given the 3 components of a float
 // return 1 if it is inf, 0 otherwise
 int is_positive_infinity(float_components_t f) {
-    // PUT YOUR CODE HERE
-
-    return 42;
+    if(is_nan(f)){
+        return 0;
+    }
+    return (f.exponent == 0xff && f.sign == 0) ? 1 : 0;
 }
 
 // given the 3 components of a float
 // return 1 if it is -inf, 0 otherwise
 int is_negative_infinity(float_components_t f) {
-    // PUT YOUR CODE HERE
-
-    return 42;
+    if(is_nan(f)){
+        return 0;
+    }
+    return (f.exponent == 0xff && f.sign == 1) ? 1 : 0;
 }
 
 // given the 3 components of a float
@@ -41,5 +49,8 @@ int is_negative_infinity(float_components_t f) {
 int is_zero(float_components_t f) {
     // PUT YOUR CODE HERE
 
-    return 42;
+    if(f.fraction == 0 && f.exponent == 0){
+        return (f.exponent == 1) ? -0 : 0;
+    }
+    return 0;
 }
