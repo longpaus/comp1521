@@ -6,7 +6,13 @@
 
 // return how many 1 bits value contains
 int bit_count(uint64_t value) {
-    // PUT YOUR CODE HERE
+    int count = 0;
+    for(int i = 0; i < 64; i++){
+        if(value & 1 == 1){
+            count++;
+        }
+        value>>=1;
+    }
 
-    return 42;
+    return count;
 }
