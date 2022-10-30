@@ -47,10 +47,5 @@ int is_negative_infinity(float_components_t f) {
 // given the 3 components of a float
 // return 1 if it is 0 or -0, 0 otherwise
 int is_zero(float_components_t f) {
-    // PUT YOUR CODE HERE
-
-    if(f.fraction == 0 && f.exponent == 0){
-        return 1;
-    }
-    return 0;
+    return (f.fraction == 0 && f.exponent == 0) ? 1 : 0;
 }
