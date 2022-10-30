@@ -18,7 +18,15 @@
 // float_2048 assumes f is not a denormal number
 //
 uint32_t float_2048(uint32_t f) {
-    // PUT YOUR CODE HERE
-
-    return 42;
+    uint32_t mask = (1 << 23) - 1;
+    uint32_t fraction = f & mask; // fraction contains first 23 bits of f
+    f >>= 23;
+    mask = (1 << 8) - 1;
+    uint32_t newExp = (f & mask) + 11;
+    f >>= 8;
+    f <<= 8;
+    f |= newExp;
+    f <<= 23;
+    f |= fraction;
+    return f;
 }
