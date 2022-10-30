@@ -79,9 +79,9 @@ uint32_t float_2048(uint32_t f) {
     uint32_t newExp = (f & mask) + 11;
     if(newExp > 255){
         if(com.sign == 1){
-            return ((1 << 8) | 0xff) << 23;
+            return (((uint32_t)1 << 8) | 0xff) << 23;
         }
-        return ((0 << 8) | 0xff) << 23;
+        return (((uint32_t)0 << 8) | 0xff) << 23;
     }
     f >>= 8;
     f <<= 8;
