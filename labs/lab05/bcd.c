@@ -22,7 +22,18 @@ int main(int argc, char *argv[]) {
 // return corresponding integer
 int bcd(int bcd_value) {
 
-    // PUT YOUR CODE HERE
+    int result=0;
+    int i=1;
+    int k;
+    while(bcd_value > 0){
+        result += (bcd_value & 0x0F)*i;
+        bcd_value >>= 4;       
+        i=i*10;       
+    }
+    k = result % 10;
+    result = result/10;
+    result = k + result;
+    return result;
 
     return 0;
 }
