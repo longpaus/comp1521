@@ -8,7 +8,7 @@
 int bit_count(uint64_t value) {
     int count = 0;
     for(int i = 0; i < 64; i++){
-        if(value & 1 == 1){
+        if(value & 1){
             count++;
         }
         value>>=1;
