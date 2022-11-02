@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
 
     for (int arg = 1; arg < argc; arg++) {
         long l = strtol(argv[arg], NULL, 0);
-        assert(l >= INT16_MIN && l <= INT16_MAX);
+        // assert(l >= INT16_MIN && l <= INT16_MAX);
         int16_t value = l;
 
         char *bits = sixteen_out(value);
