@@ -12,7 +12,7 @@ uint16_t bit_rotate(int n_rotations, uint16_t bits) {
     }
     }else{
         for(int i = n_rotations * -1; i > 0; i--){
-            uint16_t lastBit = (bits & 1);
+            uint16_t lastBit = (bits & 1) << 15;
 
             bits >>= 1;
             bits |= lastBit;
