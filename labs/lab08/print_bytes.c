@@ -5,7 +5,12 @@ int main(int argc, char *argv[]){
     int c;
     int counter = 0;
     while((c = fgetc(f)) != EOF){
-        if(c != '\n')
-           printf("byte    %d:  %d 0x%02x '%c'\n",counter,c,c,c);
+        if(c != '\n'){
+           printf("byte    %4d:  %3d 0x%02x '%c'\n",counter,c,c,c);
+        }
+        else if(c == 10){
+            printf("byte    %4d:  %3d 0x%02x\n",counter,c,c);
+        }
+        counter++;
     }
 }
