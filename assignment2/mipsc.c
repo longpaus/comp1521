@@ -50,43 +50,94 @@ int main(int argc, char *argv[]) {
 void execute_instructions(uint32_t n_instructions, uint32_t instructions[],
                           int trace_mode) {
 	// REPLACE THIS FUNCTION WITH YOUR OWN IMPLEMENTATION
-
+	uint32_t registers[34];
+	// set $0 to 0
+	registers[0] = 0;
+	//set hi and lo to 0
+	registers[32] = 0;
+	registers[33] = 0;
+	/*
+	instrucComp[0] : key1
+	instrucComp[1] : s
+	instrucComp[2] : t
+	instrucComp[3] :d
+	instrucComp[4] : key2
+	instrucComp[5] : I
+	*/
+	uint32_t instrucComp[6];
 	for (uint32_t pc = 0; pc < n_instructions; pc++) {
+
 		if (trace_mode) {
-			printf("%u: 0x%08X\n", pc, instructions[pc]);
-			// uint32_t num = instructions[pc];
-			// num >>= 11;
-			// uint32_t mask = (1 << 5) - 1;
-			// uint32_t d = num & mask;
-			// num >>= 5;
-			// uint32_t t = num & mask;
-			// num >>= 5;
-			// uint32_t s = num & mask;
-			// printf("d : %d ,  t : %d  ,  s : %d\n", d, s, t);
+			printf("%u: 0x%08X ", pc, instructions[pc]);
 
 		}
 	}
 }
 
 // ADD YOUR FUNCTIONS HERE
-
-bool isThreeRegister(uint32_t instruction){
+/*
+update the key1 (bit 31 - 25) and key2 (bit 0 - 11), then update the value of 
+s t and d. This is for the commands add,sub,slt and mul.
+check if key1 and key2 match any of the 4 commands, if it does print out the command
+and update the registers and return true. If it does not match returns false.
+*/
+bool doThreeRegisCommands(uint32_t instruction,uint32_t *instrucComp,uint32_t *registers){
     uint32_t mask = (1 << 11) - 1;
-    // key1 : last 11 bits of instruction
-    uint32_t key1 = instruction & mask;
+    instrucComp[4] = instruction & mask;
     instruction >>= 11;
-    mask = (1 << 5) - 1;
-    uint32_t d = instruction & mask;
-    instruction >>= 5;
-    uint32_t t = instruction & mask;
-    instruction >>= 5;
-    uint32_t s = instruction & mask;
 
-    //key2 : first 6 bits of instruction
+    mask = (1 << 5) - 1;
+
+    instrucComp[3] = instruction & mask;
+    instruction >>= 5;
+    instrucComp[2] = instruction & mask;
+    instruction >>= 5;
+    instrucComp[1] = instruction & mask;
+
     instruction >>= 5;
     mask = (1 << 6) - 1;
-    uint32_t key2 = instruction & mask;
+    instrucComp[0] = instruction & mask;
+
+	int commandId = whichCommand(instrucComp);
+	if(commandId == 0){
+		printf("add  $%d, $%d, $%d\n",instrucComp[3],instrucComp[1],instrucComp[2]);
+		registers[instrucComp[3]] = registers[instrucComp[1]] + registers[instrucComp[2]];
+		printf(">>> $%d = %d\n",instrucComp[3],registers[instrucComp[3]]);
+		return true;
+	} else if(commandId == 1){
+		
+	}
 }   
+/*
+given the value of key1 and key2 return the int that corresponds to the command
+that the two key indicates.
+0 : add
+1 : sub
+2: slt
+3 : mfhi
+4 : mflo
+5: mult
+6: div
+7 : mul
+8 : beq
+9 : bne
+10 : addi
+11 : ori
+12 : lui
+13 : syscall
+*/
+int whichCommand(uint32_t *instrucComp){
+	if(instrucComp[4] == 32 && instrucComp[0] == 0){
+		return 0;
+	} else if(instrucComp[4] == 34 && instrucComp[0] == 0){
+		return 1;
+	} else if(instrucComp[4] == 42 && instrucComp[0] == 0){
+		return 2;
+	} else if(instrucComp[4] == 2 && instrucComp[0] == 28){
+		return 7;
+	}
+}
+
 
 
 // DO NOT CHANGE ANY CODE BELOW HERE

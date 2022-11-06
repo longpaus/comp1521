@@ -5,6 +5,9 @@
 		}
 	],
 	"settings": {
-		"editor.tabSize": 8
+		"editor.tabSize": 4,
+		"files.associations": {
+			"create_integers_file": "c"
+		}
 	}
 }
