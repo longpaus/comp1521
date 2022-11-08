@@ -83,7 +83,7 @@ void execute_instructions(uint32_t n_instructions, uint32_t instructions[],
 	*/
 	uint32_t instrucComp[6];
 	for (uint32_t pc = 0; pc < n_instructions; pc++) {
-
+		registers[0] = 0;
 		if (trace_mode) {
 			printf("%u: 0x%08X ", pc, instructions[pc]);
 		}
