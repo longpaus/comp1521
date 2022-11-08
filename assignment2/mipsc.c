@@ -31,10 +31,13 @@ uint32_t *read_instructions(char *filename, uint32_t *n_instructions_p);
 uint32_t *instructions_realloc(uint32_t *instructions, uint32_t n_instructions);
 
 // ADD ANY ADDITIONAL FUNCTION PROTOTYPES HERE
-bool doCommandsWithConst(uint32_t instruction,uint32_t *instrucComp,uint32_t *registers,uint32_t *pc);
-bool doThreeRegisCommands(uint32_t instruction,uint32_t *instrucComp,uint32_t *registers);
+bool doCommandsWithConst(uint32_t instruction,uint32_t *instrucComp,uint32_t *registers,uint32_t *pc,int trace_mode);
+bool doThreeRegisCommands(uint32_t instruction,uint32_t *instrucComp,uint32_t *registers,int trace_mode);
 int whichCommand(uint32_t *instrucComp);
-bool doSyscall(uint32_t instruction,uint32_t *registers);
+bool doSyscall(uint32_t instruction,uint32_t *registers,int trace_mode);
+void traceMode(char *command,uint32_t *instrucComp,uint32_t *registers,int id);
+void traceBranchCommands(char *command,uint32_t *instrucComp,uint32_t *pc,bool branch);
+
 
 // YOU DO NOT NEED TO CHANGE MAIN
 // but you can if you really want to
@@ -81,11 +84,11 @@ void execute_instructions(uint32_t n_instructions, uint32_t instructions[],
 		if (trace_mode) {
 			printf("%u: 0x%08X ", pc, instructions[pc]);
 		}
-		if(doThreeRegisCommands(instructions[pc],instrucComp,registers)){
+		if(doThreeRegisCommands(instructions[pc],instrucComp,registers,trace_mode)){
 			continue;
-		} else if(doCommandsWithConst(instructions[pc],instrucComp,registers,&pc)){
+		} else if(doCommandsWithConst(instructions[pc],instrucComp,registers,&pc,trace_mode)){
 			continue;
-		} else if(doSyscall(instructions[pc],registers)){
+		} else if(doSyscall(instructions[pc],registers,trace_mode)){
 			continue;
 		}
 
@@ -99,7 +102,7 @@ s t and d. This is for the commands add,sub,slt and mul.
 check if key1 and key2 match any of the 4 commands, if it does print out the command
 and update the registers and return true. If it does not match returns false.
 */
-bool doThreeRegisCommands(uint32_t instruction,uint32_t *instrucComp,uint32_t *registers){
+bool doThreeRegisCommands(uint32_t instruction,uint32_t *instrucComp,uint32_t *registers,int trace_mode){
     uint32_t mask = (1 << 11) - 1;
     instrucComp[KEY2] = instruction & mask;
     instruction >>= 11;
@@ -118,28 +121,48 @@ bool doThreeRegisCommands(uint32_t instruction,uint32_t *instrucComp,uint32_t *r
 
 	int commandId = whichCommand(instrucComp);
 	if(commandId == 0){
-		printf("add  $%d, $%d, $%d\n",instrucComp[D],instrucComp[S],instrucComp[T]);
 		registers[instrucComp[D]] = registers[instrucComp[S]] + registers[instrucComp[T]];
-		printf(">>> $%d = %d\n",instrucComp[D],registers[instrucComp[D]]);
+		if(trace_mode){
+			traceMode("add",instrucComp,registers,0);
+		}
 		return true;
 	} else if(commandId == 1){
-		printf("sub  $%d, $%d, $%d\n",instrucComp[D],instrucComp[S],instrucComp[T]);
 		registers[instrucComp[D]] = registers[instrucComp[S]] - registers[instrucComp[T]];
-		printf(">>> $%d = %d\n",instrucComp[D],registers[instrucComp[D]]);
+		if(trace_mode){
+			traceMode("sub",instrucComp,registers,1);
+		}
 		return true;
 	} else if (commandId == 2){
-		printf("slt  $%d, $%d, $%d\n",instrucComp[D],instrucComp[S],instrucComp[T]);
 		registers[instrucComp[D]] = registers[instrucComp[S]] < registers[instrucComp[T]];
-		printf(">>> $%d = %d\n",instrucComp[D],registers[instrucComp[D]]);
+		if(trace_mode){
+			traceMode("slt",instrucComp,registers,2);
+		}
 		return true;
 	} else if(commandId == 7){
-		printf("mul  $%d, $%d, $%d\n",instrucComp[D],instrucComp[S],instrucComp[T]);
 		registers[instrucComp[D]] = registers[instrucComp[S]] * registers[instrucComp[T]];
-		printf(">>> $%d = %d\n",instrucComp[D],registers[instrucComp[D]]);
+		if(trace_mode){
+			traceMode("mul",instrucComp,registers,7);
+		}
 		return true;
 	}
 	return false;
 }   
+
+void traceMode(char *command,uint32_t *instrucComp,uint32_t *registers,int id){
+	if(id == 0 || id == 1 || id == 2 || id == 7){
+		printf("%s  $%d, $%d, $%d\n",command,instrucComp[D],instrucComp[S],instrucComp[T]);
+		printf(">>> $%d = %d\n",instrucComp[D],registers[instrucComp[D]]);
+	}
+
+	if(id == 10 ){
+		printf("%s $%d, $%d, %d\n",command,instrucComp[T],instrucComp[S],instrucComp[I]);
+		printf(">>> $%d = %d\n",instrucComp[T],registers[instrucComp[T]]);
+	}
+	if(id == 11){
+		printf("%s  $%d, $%d, %d\n",command,instrucComp[T],instrucComp[S],instrucComp[I]);
+		printf(">>> $%d = %d\n",instrucComp[T],registers[instrucComp[T]]);
+	}
+}
 
 /*
 get the value of key1 (bit 31 - 26) then get the I (bit 0 - 15) 
@@ -147,9 +170,9 @@ then update the value of t and s.
 check if the instruction is for addi,ori,beq and bne (not lui). If it is
 then update the registers and return false, otherwise return false.
 */
-bool doCommandsWithConst(uint32_t instruction,uint32_t *instrucComp,uint32_t *registers,uint32_t *pc){
+bool doCommandsWithConst(uint32_t instruction,uint32_t *instrucComp,uint32_t *registers,uint32_t *pc,int trace_mode){
 	uint32_t mask = (1 << 16) - 1;
-	instrucComp[I] = instruction & mask;
+	instrucComp[I] = (int16_t)(instruction & mask);
 	instruction >>= 16;
 	mask = (1 << 5) - 1;
 	instrucComp[T] = instruction & mask;
@@ -161,46 +184,82 @@ bool doCommandsWithConst(uint32_t instruction,uint32_t *instrucComp,uint32_t *re
 
 	int commandId = whichCommand(instrucComp);
 	if(commandId == 10){
-		printf("addi $%d, $%d, %d\n",instrucComp[T],instrucComp[S],instrucComp[I]);
 		registers[instrucComp[T]] = registers[instrucComp[S]] + instrucComp[I];
-		printf(">>> $%d = %d\n",instrucComp[T],registers[instrucComp[T]]);
+		if(trace_mode){
+			traceMode("addi",instrucComp,registers,10);
+		}
 		return true;
 	} else if(commandId == 11){
-		printf("ori $%d, $%d, %d\n",instrucComp[T],instrucComp[S],instrucComp[I]);
 		registers[instrucComp[T]] = registers[instrucComp[S]] | instrucComp[I];
-		printf(">>> $%d = %d\n",instrucComp[T],registers[instrucComp[T]]);
+		if(trace_mode){
+			traceMode("ori",instrucComp,registers,11);
+		}
 		return true;
-	} else if(commandId == 8 && (registers[instrucComp[S]] == registers[instrucComp[T]])){
-		printf("beq  $%d, $%d, %d\n",instrucComp[S],instrucComp[T],instrucComp[I]);
-		*pc+= instrucComp[I] - 1;
-		printf(">>> branch taken to PC = %d",*pc + 1);
+	} else if(commandId == 8){
+		if(registers[instrucComp[S]] == registers[instrucComp[T]]){
+			*pc+= instrucComp[I] - 1;
+		}
+		if(trace_mode){
+			traceBranchCommands("beq",instrucComp,pc,registers[instrucComp[S]] == registers[instrucComp[T]]);
+		}
 		return true;
-	} else if(commandId == 9 && (registers[instrucComp[S]] != registers[instrucComp[T]])){
-		printf("bne  $%d, $%d, %d\n",instrucComp[S],instrucComp[T],instrucComp[I]);
-		*pc+= instrucComp[I] - 1;
-		printf(">>> branch taken to PC = %d",*pc + 1);
+	} else if(commandId == 9){
+		if(registers[instrucComp[S]] != registers[instrucComp[T]]){
+			*pc+= instrucComp[I] - 1;
+		}
+		if(trace_mode){
+			traceBranchCommands("bne",instrucComp,pc,registers[instrucComp[S]] != registers[instrucComp[T]]);
+		}		
 		return true;
 	}
 	return false;
 }
 
-bool doSyscall(uint32_t instruction,uint32_t *registers){
-	if(instruction == 12){
-		printf("syscall\n");
-		printf(">>> syscall %d\n",registers[2]);
-		if(registers[2] == 1){
-			printf("<<< %d\n", registers[4]);
-		}
-		else if(registers[2] == 10){
-			exit(0);
-		} else if(registers[2] == 11){
-			printf("<<< %c\n", registers[4]);
-		}
-		return true;
+void traceBranchCommands(char *command,uint32_t *instrucComp,uint32_t *pc,bool branch){
+	printf("%s  $%d, $%d, %d\n",command,instrucComp[S],instrucComp[T],instrucComp[I]);
+	if(branch){
+		printf(">>> branch taken to PC = %d\n",*pc + 1);
+	} else{
+		printf(">>> branch not taken\n");
 	}
-	printf("Unknown system call: %d\n",registers[2]);
+	
+}
+
+bool doSyscall(uint32_t instruction,uint32_t *registers,int trace_mode){
+	if(trace_mode){
+		if(instruction == 12){
+			printf("syscall\n");
+			printf(">>> syscall %d\n",registers[2]);
+			if(registers[2] == 1){
+				printf("<<< %d\n", registers[4]);
+			}
+			else if(registers[2] == 10){
+				exit(0);
+			} else if(registers[2] == 11){
+				printf("<<< %c\n", registers[4]);
+			}
+			return true;
+		}
+		printf("Unknown system call: %d\n",registers[2]);
+		return false;
+	} else{
+		if(instruction == 12){
+			if(registers[2] == 1){
+				printf("%d", registers[4]);
+			}
+			else if(registers[2] == 10){
+				exit(0);
+			} else if(registers[2] == 11){
+				printf("%c", registers[4]);
+			}
+			return true;
+		}
+		return false;
+	}
 	return false;
 }
+
+
 /*
 given the value of key1 and key2 return the int that corresponds to the command
 that the two key indicates.

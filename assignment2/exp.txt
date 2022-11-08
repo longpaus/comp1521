@@ -238,7 +238,8 @@
 >>> $4 = 91
 6: 0x0088482A slt  $9, $4, $8
 >>> $9 = 0
-7: 0x1520FFFD Unknown system call: 11
+7: 0x1520FFFD bne  $9, $0, -3
+>>> branch not taken
 8: 0x2004000A addi $4, $0, 10
 >>> $4 = 10
 9: 0x0000000C syscall
