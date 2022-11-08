@@ -17,6 +17,7 @@ int main(int argc, char *argv[]){
     while((c = fgetc(f)) != '\n'){
         printf("%c",c);
     }
+    printf("\n");
     fclose(f);
 
 
