@@ -23,6 +23,8 @@
 #define D 3
 #define KEY2 4
 #define I 5
+#define LO 32
+#define HI 33
 
 void execute_instructions(uint32_t n_instructions, uint32_t instructions[],
                           int trace_mode);
@@ -37,6 +39,7 @@ int whichCommand(uint32_t *instrucComp);
 bool doSyscall(uint32_t instruction,uint32_t *registers,int trace_mode);
 void traceMode(char *command,uint32_t *instrucComp,uint32_t *registers,int id);
 void traceBranchCommands(char *command,uint32_t *instrucComp,uint32_t *pc,bool branch);
+bool doOneRegisterCommand(uint32_t instruction,uint32_t *instrucComp,uint32_t *registers,int trace_mode);
 
 
 // YOU DO NOT NEED TO CHANGE MAIN
@@ -68,8 +71,8 @@ void execute_instructions(uint32_t n_instructions, uint32_t instructions[],
 	// set $0 to 0
 	registers[0] = 0;
 	//set hi and lo to 0
-	registers[32] = 0;
-	registers[33] = 0;
+	registers[LO] = 0;
+	registers[HI] = 0;
 	/*
 	instrucComp[0] : key1
 	instrucComp[1] : s
@@ -89,6 +92,8 @@ void execute_instructions(uint32_t n_instructions, uint32_t instructions[],
 		} else if(doCommandsWithConst(instructions[pc],instrucComp,registers,&pc,trace_mode)){
 			continue;
 		} else if(doSyscall(instructions[pc],registers,trace_mode)){
+			continue;
+		} else if(doOneRegisterCommand(instructions[pc],instrucComp,registers,trace_mode)){
 			continue;
 		}
 
@@ -162,6 +167,10 @@ void traceMode(char *command,uint32_t *instrucComp,uint32_t *registers,int id){
 		printf("%s  $%d, $%d, %d\n",command,instrucComp[T],instrucComp[S],instrucComp[I]);
 		printf(">>> $%d = %d\n",instrucComp[T],registers[instrucComp[T]]);
 	}
+	if(id == 3 || id == 4){
+		printf("%s $%d",command,instrucComp[D]);
+		printf(">>> $%d = %d\n",instrucComp[D],registers[instrucComp[D]]);
+	}
 }
 
 /*
@@ -214,7 +223,10 @@ bool doCommandsWithConst(uint32_t instruction,uint32_t *instrucComp,uint32_t *re
 	}
 	return false;
 }
-
+/*
+print out the commands for branching commands(bne and beq).
+If branch is false then print the branch not taken line.
+*/
 void traceBranchCommands(char *command,uint32_t *instrucComp,uint32_t *pc,bool branch){
 	printf("%s  $%d, $%d, %d\n",command,instrucComp[S],instrucComp[T],instrucComp[I]);
 	if(branch){
@@ -224,7 +236,10 @@ void traceBranchCommands(char *command,uint32_t *instrucComp,uint32_t *pc,bool b
 	}
 	
 }
-
+/*
+check if the instruction is a syscall, if it is then check $v0 and do 
+the operations accordingly then return true. otherwise return false.
+*/
 bool doSyscall(uint32_t instruction,uint32_t *registers,int trace_mode){
 	if(trace_mode){
 		if(instruction == 12){
@@ -241,7 +256,6 @@ bool doSyscall(uint32_t instruction,uint32_t *registers,int trace_mode){
 			return true;
 		}
 		printf("Unknown system call: %d\n",registers[2]);
-		return false;
 	} else{
 		if(instruction == 12){
 			if(registers[2] == 1){
@@ -254,11 +268,43 @@ bool doSyscall(uint32_t instruction,uint32_t *registers,int trace_mode){
 			}
 			return true;
 		}
-		return false;
 	}
 	return false;
 }
+/*
+updates the value for Key1 (bit 31 - 16) and key2(bit 0 - 10).
+check if the command is mfhi or mflo then update the registers and 
+return true otherwise return false.
+*/
 
+bool doOneRegisterCommand(uint32_t instruction,uint32_t *instrucComp,uint32_t *registers,int trace_mode){
+	uint32_t mask = (1 << 11) - 1;
+    instrucComp[KEY2] = instruction & mask;
+    instruction >>= 11;
+
+	mask = (1 << 5) - 1;
+	instrucComp[D] = instruction & mask;
+
+	instruction >>= 5;
+	mask = (1 << 16) - 1;
+	instrucComp[KEY1] = instruction & mask;
+
+	int commandId = whichCommand(instrucComp);
+	if(commandId == 3){
+		registers[instrucComp[D]] = registers[HI];
+		if(trace_mode){
+			traceMode("mfhi",instrucComp,registers,3);
+		}
+		return true;
+	} else if(commandId == 4){
+		registers[instrucComp[D]] = registers[LO];
+		if(trace_mode){
+			traceMode("mflo",instrucComp,registers,3);
+		}
+		return true;
+	}
+	return false;
+}
 
 /*
 given the value of key1 and key2 return the int that corresponds to the command
@@ -299,6 +345,12 @@ int whichCommand(uint32_t *instrucComp){
 		return 9;
 	}
 
+	// check for one register commands
+	else if(instrucComp[KEY1] == 0 && instrucComp[KEY2] == 16){
+		return 3;
+	} else if(instrucComp[KEY1] == 0 && instrucComp[KEY2] == 18){
+		return 4;
+	}
 	return -1;
 
 }
