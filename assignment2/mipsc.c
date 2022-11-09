@@ -365,7 +365,7 @@ bool doHiLoCommands(uint32_t instruction,uint32_t *instrucComp,uint32_t *registe
 
 	int commandId = whichCommand(instrucComp);
 	if(commandId == 5){
-		uint64_t prod = registers[instrucComp[S]] * registers[instrucComp[T]];
+		uint64_t prod = (uint64_t)registers[instrucComp[S]] * (uint64_t)registers[instrucComp[T]];
 		mask = ((uint32_t)1 << 31) - 1;
 		registers[LO] = (uint32_t)(prod & mask);
 		prod >>= 32;
