@@ -41,6 +41,7 @@ void traceMode(char *command,uint32_t *instrucComp,uint32_t *registers,int id);
 void traceBranchCommands(char *command,uint32_t *instrucComp,uint32_t *pc,bool branch);
 bool doOneRegisterCommand(uint32_t instruction,uint32_t *instrucComp,uint32_t *registers,int trace_mode);
 bool doHiLoCommands(uint32_t instruction,uint32_t *instrucComp,uint32_t *registers,int trace_mode);
+bool doLuiCommand(uint32_t instruction,uint32_t *instrucComp,uint32_t *registers,int trace_mode);
 
 // YOU DO NOT NEED TO CHANGE MAIN
 // but you can if you really want to
@@ -94,8 +95,9 @@ void execute_instructions(uint32_t n_instructions, uint32_t instructions[],
 			continue;
 		}else if(doHiLoCommands(instructions[pc],instrucComp,registers,trace_mode)){
 			continue;
-		} 
-		else if(doSyscall(instructions[pc],registers,trace_mode)){
+		} else if(doLuiCommand(instructions[pc],instrucComp,registers,trace_mode)){
+			continue;
+		} else if(doSyscall(instructions[pc],registers,trace_mode)){
 			continue;
 		}
 
@@ -180,6 +182,9 @@ void traceMode(char *command,uint32_t *instrucComp,uint32_t *registers,int id){
 	else if(id == 6){
 		printf("%s  $%d, $%d\n",command,instrucComp[S],instrucComp[T]);
 		printf(">>> HI = %d\n>>> LO = %d\n",registers[HI],registers[LO]);
+	} else if(id == 12){
+		printf("%s  $%d, %d\n",command,instrucComp[T],instrucComp[I]);
+		printf(">>> $%d = %d\n",instrucComp[T],registers[instrucComp[T]]);
 	}
 }
 
@@ -278,6 +283,26 @@ bool doSyscall(uint32_t instruction,uint32_t *registers,int trace_mode){
 			}
 			return true;
 		}
+	}
+	return false;
+}
+
+bool doLuiCommand(uint32_t instruction,uint32_t *instrucComp,uint32_t *registers,int trace_mode){
+	uint32_t mask = (1 << 16) - 1;
+	instrucComp[I] = (int16_t)(instruction & mask);
+	instruction >>= 16;
+	mask = (1 << 5) - 1;
+	instrucComp[T] = instruction & mask;
+	instruction >>= 5;
+	mask = (1 << 11) - 1;
+	instrucComp[KEY1] = instruction & mask;
+	int commandID = whichCommand(instrucComp);
+	if(commandID == 12){
+		registers[instrucComp[T]] = instrucComp[I] << 16;
+		if(trace_mode){
+			traceMode("lui",instrucComp,registers,12);
+		}
+		return true;
 	}
 	return false;
 }
@@ -391,6 +416,8 @@ int whichCommand(uint32_t *instrucComp){
 		return 8;
 	} else if(instrucComp[KEY1] == 5){
 		return 9;
+	} else if(instrucComp[KEY1] == 480){
+		return 12;
 	}
 
 	// check for one register commands
