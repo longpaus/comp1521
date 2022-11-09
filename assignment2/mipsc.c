@@ -271,19 +271,23 @@ bool doSyscall(uint32_t instruction,uint32_t *registers,int trace_mode){
 				printf("<<< %c\n", registers[4]);
 				return true;
 			}
+			fprintf( stderr, "Unknown system call: %d\n",registers[2]);
 		}
-		printf("Unknown system call: %d\n",registers[2]);
+
 	} else{
 		if(instruction == 12){
 			if(registers[2] == 1){
 				printf("%d", registers[4]);
+				return true;
 			}
 			else if(registers[2] == 10){
 				exit(0);
+				return true;
 			} else if(registers[2] == 11){
 				printf("%c", registers[4]);
+				return true;
 			}
-			return true;
+			fprintf( stderr, "Unknown system call: %d\n",registers[2]);
 		}
 	}
 	return false;
