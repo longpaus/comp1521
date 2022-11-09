@@ -40,7 +40,7 @@ bool doSyscall(uint32_t instruction,uint32_t *registers,int trace_mode);
 void traceMode(char *command,uint32_t *instrucComp,uint32_t *registers,int id);
 void traceBranchCommands(char *command,uint32_t *instrucComp,uint32_t *pc,bool branch);
 bool doOneRegisterCommand(uint32_t instruction,uint32_t *instrucComp,uint32_t *registers,int trace_mode);
-
+bool doHiLoCommands(uint32_t instruction,uint32_t *instrucComp,uint32_t *registers,int trace_mode);
 
 // YOU DO NOT NEED TO CHANGE MAIN
 // but you can if you really want to
@@ -66,7 +66,6 @@ int main(int argc, char *argv[]) {
 // execution stops if it reaches the end of the array
 void execute_instructions(uint32_t n_instructions, uint32_t instructions[],
                           int trace_mode) {
-	// REPLACE THIS FUNCTION WITH YOUR OWN IMPLEMENTATION
 	uint32_t registers[34];
 	// set $0 to 0
 	registers[0] = 0;
@@ -91,9 +90,12 @@ void execute_instructions(uint32_t n_instructions, uint32_t instructions[],
 			continue;
 		} else if(doCommandsWithConst(instructions[pc],instrucComp,registers,&pc,trace_mode)){
 			continue;
-		} else if(doSyscall(instructions[pc],registers,trace_mode)){
+		}else if(doOneRegisterCommand(instructions[pc],instrucComp,registers,trace_mode)){
 			continue;
-		} else if(doOneRegisterCommand(instructions[pc],instrucComp,registers,trace_mode)){
+		}else if(doHiLoCommands(instructions[pc],instrucComp,registers,trace_mode)){
+			continue;
+		} 
+		else if(doSyscall(instructions[pc],registers,trace_mode)){
 			continue;
 		}
 
@@ -159,20 +161,25 @@ void traceMode(char *command,uint32_t *instrucComp,uint32_t *registers,int id){
 		printf(">>> $%d = %d\n",instrucComp[D],registers[instrucComp[D]]);
 	}
 
-	if(id == 10 ){
+	else if(id == 10 ){
 		printf("%s $%d, $%d, %d\n",command,instrucComp[T],instrucComp[S],instrucComp[I]);
 		printf(">>> $%d = %d\n",instrucComp[T],registers[instrucComp[T]]);
 	}
-	if(id == 11){
+	else if(id == 11){
 		printf("%s  $%d, $%d, %d\n",command,instrucComp[T],instrucComp[S],instrucComp[I]);
 		printf(">>> $%d = %d\n",instrucComp[T],registers[instrucComp[T]]);
 	}
-	if(id == 3 || id == 4){
-		printf("%s $%d",command,instrucComp[D]);
+	else if(id == 3 || id == 4){
+		printf("%s $%d\n",command,instrucComp[D]);
 		printf(">>> $%d = %d\n",instrucComp[D],registers[instrucComp[D]]);
 	}
-	if(id == 5){
-		
+	else if(id == 5){
+		printf("%s $%d, $%d\n",command,instrucComp[S],instrucComp[T]);
+		printf(">>> HI = %d\n>>> LO = %d\n",registers[HI],registers[LO]);
+	}
+	else if(id == 6){
+		printf("%s  $%d, $%d\n",command,instrucComp[S],instrucComp[T]);
+		printf(">>> HI = %d\n>>> LO = %d\n",registers[HI],registers[LO]);
 	}
 }
 
@@ -327,10 +334,24 @@ bool doHiLoCommands(uint32_t instruction,uint32_t *instrucComp,uint32_t *registe
 
 	int commandId = whichCommand(instrucComp);
 	if(commandId == 5){
-		registers[HI] = registers[instrucComp[S]] * registers[instrucComp[T]];
-		registers[LO] = registers[instrucComp[S]] * registers[instrucComp[T]];
+		uint64_t prod = registers[instrucComp[S]] * registers[instrucComp[T]];
+		mask = ((uint32_t)1 << 31) - 1;
+		registers[LO] = (uint32_t)(prod & mask);
+		prod >>= 32;
+		registers[HI] = prod;
+		if(trace_mode){
+			traceMode("mult",instrucComp,registers,5);
+		}
+		return true;
+	} else if(commandId == 6){
+		registers[HI] = registers[instrucComp[S]] % registers[instrucComp[T]];
+		registers[LO] = registers[instrucComp[S]] / registers[instrucComp[T]];
+		if(trace_mode){
+			traceMode("div",instrucComp,registers,6);
+		}
+		return true;
 	}
-	
+	return false;
 }
 
 /*

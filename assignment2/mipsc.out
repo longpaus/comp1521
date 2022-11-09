@@ -1,248 +1,61 @@
-0: 0x2002000B addi $2, $0, 11
+0: 0x200E012C addi $14, $0, 300
+>>> $14 = 300
+1: 0x200F0018 addi $15, $0, 24
+>>> $15 = 24
+2: 0x20180019 addi $24, $0, 25
+>>> $24 = 25
+3: 0x2019001A addi $25, $0, 26
+>>> $25 = 26
+4: 0x20020001 addi $2, $0, 1
+>>> $2 = 1
+5: 0x01CF001A div  $14, $15
+>>> HI = 12
+>>> LO = 12
+6: 0x00002010 mfhi $4
+>>> $4 = 12
+7: 0x0000000C syscall
+>>> syscall 1
+<<< 12
+8: 0x2002000B addi $2, $0, 11
 >>> $2 = 11
-1: 0x2008005A addi $8, $0, 90
->>> $8 = 90
-2: 0x21080001 addi $8, $8, 1
->>> $8 = 91
-3: 0x20040041 addi $4, $0, 65
->>> $4 = 65
-4: 0x0000000C syscall
->>> syscall 11
-<<< A
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 66
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 1
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch taken to PC = 4
-4: 0x0000000C syscall
->>> syscall 11
-<<< B
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 67
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 1
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch taken to PC = 4
-4: 0x0000000C syscall
->>> syscall 11
-<<< C
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 68
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 1
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch taken to PC = 4
-4: 0x0000000C syscall
->>> syscall 11
-<<< D
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 69
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 1
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch taken to PC = 4
-4: 0x0000000C syscall
->>> syscall 11
-<<< E
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 70
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 1
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch taken to PC = 4
-4: 0x0000000C syscall
->>> syscall 11
-<<< F
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 71
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 1
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch taken to PC = 4
-4: 0x0000000C syscall
->>> syscall 11
-<<< G
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 72
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 1
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch taken to PC = 4
-4: 0x0000000C syscall
->>> syscall 11
-<<< H
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 73
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 1
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch taken to PC = 4
-4: 0x0000000C syscall
->>> syscall 11
-<<< I
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 74
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 1
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch taken to PC = 4
-4: 0x0000000C syscall
->>> syscall 11
-<<< J
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 75
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 1
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch taken to PC = 4
-4: 0x0000000C syscall
->>> syscall 11
-<<< K
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 76
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 1
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch taken to PC = 4
-4: 0x0000000C syscall
->>> syscall 11
-<<< L
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 77
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 1
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch taken to PC = 4
-4: 0x0000000C syscall
->>> syscall 11
-<<< M
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 78
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 1
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch taken to PC = 4
-4: 0x0000000C syscall
->>> syscall 11
-<<< N
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 79
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 1
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch taken to PC = 4
-4: 0x0000000C syscall
->>> syscall 11
-<<< O
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 80
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 1
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch taken to PC = 4
-4: 0x0000000C syscall
->>> syscall 11
-<<< P
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 81
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 1
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch taken to PC = 4
-4: 0x0000000C syscall
->>> syscall 11
-<<< Q
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 82
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 1
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch taken to PC = 4
-4: 0x0000000C syscall
->>> syscall 11
-<<< R
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 83
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 1
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch taken to PC = 4
-4: 0x0000000C syscall
->>> syscall 11
-<<< S
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 84
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 1
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch taken to PC = 4
-4: 0x0000000C syscall
->>> syscall 11
-<<< T
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 85
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 1
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch taken to PC = 4
-4: 0x0000000C syscall
->>> syscall 11
-<<< U
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 86
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 1
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch taken to PC = 4
-4: 0x0000000C syscall
->>> syscall 11
-<<< V
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 87
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 1
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch taken to PC = 4
-4: 0x0000000C syscall
->>> syscall 11
-<<< W
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 88
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 1
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch taken to PC = 4
-4: 0x0000000C syscall
->>> syscall 11
-<<< X
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 89
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 1
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch taken to PC = 4
-4: 0x0000000C syscall
->>> syscall 11
-<<< Y
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 90
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 1
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch taken to PC = 4
-4: 0x0000000C syscall
->>> syscall 11
-<<< Z
-5: 0x20840001 addi $4, $4, 1
->>> $4 = 91
-6: 0x0088482A slt  $9, $4, $8
->>> $9 = 0
-7: 0x1520FFFD bne  $9, $0, -3
->>> branch not taken
-8: 0x2004000A addi $4, $0, 10
+9: 0x2004000A addi $4, $0, 10
 >>> $4 = 10
-9: 0x0000000C syscall
+10: 0x0000000C syscall
 >>> syscall 11
 <<< 
 
+11: 0x20020001 addi $2, $0, 1
+>>> $2 = 1
+12: 0x01D8001A div  $14, $24
+>>> HI = 0
+>>> LO = 12
+13: 0x00002010 mfhi $4
+>>> $4 = 0
+14: 0x0000000C syscall
+>>> syscall 1
+<<< 0
+15: 0x2002000B addi $2, $0, 11
+>>> $2 = 11
+16: 0x2004000A addi $4, $0, 10
+>>> $4 = 10
+17: 0x0000000C syscall
+>>> syscall 11
+<<< 
+
+18: 0x20020001 addi $2, $0, 1
+>>> $2 = 1
+19: 0x01D9001A div  $14, $25
+>>> HI = 14
+>>> LO = 11
+20: 0x00002012 mflo $4
+>>> $4 = 11
+21: 0x0000000C syscall
+>>> syscall 1
+<<< 11
+22: 0x2002000B addi $2, $0, 11
+>>> $2 = 11
+23: 0x2004000A addi $4, $0, 10
+>>> $4 = 10
+24: 0x0000000C syscall
+>>> syscall 11
+<<< 
