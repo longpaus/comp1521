@@ -19,5 +19,7 @@ int main(int argc,char *argv[]){
             fputc(c,f2);
         }
     }
+    fclose(f1);
+    fclose(f2);
     return 0;
 }
