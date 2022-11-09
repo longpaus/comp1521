@@ -400,7 +400,7 @@ int whichCommand(uint32_t *instrucComp){
 		return 4;
 	}
 	//check for commands that change Hi and Lo
-	else if(instrucComp[KEY1] == 0 && instrucComp[KEY2 == 24]){
+	else if(instrucComp[KEY1] == 0 && instrucComp[KEY2] == 24){
 		return 5;
 	} else if(instrucComp[KEY1] == 0 && instrucComp[KEY2] == 26){
 		return 6;
