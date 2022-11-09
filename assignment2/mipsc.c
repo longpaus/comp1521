@@ -97,8 +97,8 @@ void execute_instructions(uint32_t n_instructions, uint32_t instructions[],
 			continue;
 		} else if(doLuiCommand(instructions[pc],instrucComp,registers,trace_mode)){
 			continue;
-		} else if(doSyscall(instructions[pc],registers,trace_mode)){
-			continue;
+		} else if(!doSyscall(instructions[pc],registers,trace_mode)){
+			break;
 		}
 
 	}
@@ -262,13 +262,15 @@ bool doSyscall(uint32_t instruction,uint32_t *registers,int trace_mode){
 			printf(">>> syscall %d\n",registers[2]);
 			if(registers[2] == 1){
 				printf("<<< %d\n", registers[4]);
+				return true;
 			}
 			else if(registers[2] == 10){
 				exit(0);
+				return true;
 			} else if(registers[2] == 11){
 				printf("<<< %c\n", registers[4]);
+				return true;
 			}
-			return true;
 		}
 		printf("Unknown system call: %d\n",registers[2]);
 	} else{
