@@ -7,7 +7,7 @@ int main(int argc,char *argv[]){
     for(int i = 2; i < argc; i++){
         fseek(f,atoi(argv[i]),SEEK_SET);
         c = fgetc(f);
-        printf("%d - 0x%02x - '%c'\n",c,c,c);
+        printf("%d - 0x%02X - '%c'\n",c,c,c);
     }
     fclose(f);
 }
