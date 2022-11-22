@@ -188,7 +188,7 @@ void traceMode(char *command, uint32_t *instrucComp, uint32_t *registers,
     } else if (id == 11) {
         printf("%s  $%d, $%d, %d\n", command, instrucComp[T], instrucComp[S],
                instrucComp[I]);
-        printf(">>> $%d = %d\n", instrucComp[T], registers[instrucComp[T]]);
+        printf(">>> $%d = %u\n", instrucComp[T], registers[instrucComp[T]]);
     } else if (id == 3 || id == 4) {
         printf("%s $%d\n", command, instrucComp[D]);
         printf(">>> $%d = %d\n", instrucComp[D], registers[instrucComp[D]]);
@@ -231,7 +231,7 @@ bool doCommandsWithConst(uint32_t instruction, uint32_t *instrucComp,
         }
         return true;
     } else if (commandId == 11) {
-        registers[instrucComp[T]] = registers[instrucComp[S]] | instrucComp[I];
+        registers[instrucComp[T]] = (uint32_t)(registers[instrucComp[S]] | (instrucComp[I]& ((1 << 16) - 1)));
         if (trace_mode) {
             traceMode("ori", instrucComp, registers, 11);
         }
@@ -393,7 +393,7 @@ bool doHiLoCommands(uint32_t instruction, uint32_t *instrucComp,
         mask = ((uint32_t)1 << 31) - 1;
         registers[LO] = (uint32_t)(prod & mask);
         prod >>= 32;
-        registers[HI] = prod;
+        registers[HI] = (uint32_t)prod;
         if (trace_mode) {
             traceMode("mult", instrucComp, registers, 5);
         }
