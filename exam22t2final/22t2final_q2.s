@@ -5,17 +5,24 @@ main:
 	syscall
 	move	$t0, $v0	# read integer into $t0
 
+	li	$t1,0		# count = 0
+	li	$t2,0		# i = 0
+loop:
+	bgt 	$t2,32,main__end
+	andi 	$t3,$t0,1
+	beq 	$t3,0,increase_count
+	b 	counter
 
-	# THESE LINES JUST PRINT 42\n
-	# REPLACE THE LINES BELOW WITH YOUR CODE
-	li	$v0, 1		# syscall 1: print_int
-	li	$a0, 42
-	syscall			# printf("42");
+increase_count:
+	addi 	$t1,$t1,1	#count++
+	b 	counter
 
-	li	$v0, 11		# syscall 11: print_char
-	li	$a0, '\n'
-	syscall			# printf("\n");
-	# REPLACE THE LINES ABOVE WITH YOUR CODE
+
+counter:
+	addi	$t2,$t2,1	# i++
+	srl 	$t0,$t0,1	# x >>= 1
+	b 	loop
+	
 
 main__end:
 	li	$v0, 0		# return 0;
