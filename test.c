@@ -1,32 +1,26 @@
-#include <stdio.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-void func(uint32_t *num){
-	*num = 0;
-}
-int16_t twosCompToDec(uint32_t two_compliment_val)
+void HeapInsert(Heap h, Item it)
 {
-    // [0x0000; 0x7FFF] corresponds to [0; 32,767]
-    // [0x8000; 0xFFFF] corresponds to [-32,768; -1]
-    // int16_t has the range [-32,768; 32,767]
-
-    uint32_t sign_mask = 0x8000;
-
-    // if positive
-    if ( (two_compliment_val & sign_mask) == 0 ) {
-        return two_compliment_val;
-    //  if negative
-    } else {
-        // invert all bits, add one, and make negative
-        return -(~two_compliment_val + 1);
-    }
-}
-int main(){
-	uint32_t n = 65533;
-	printf("%d\n",twosCompToDec(n));
-	
+   // is there space in the array?
+   assert(h->nitems < h->nslots);
+   h->nitems++;
+   // add new item at end of array
+   h->items[h->nitems] = it;
+   // move new item to its correct place
+   fixUp(h->items, h->nitems);
 }
 
+// force value at a[i] into correct position
+// note that N gives max index *and* # items
+void fixDown(Item a[], int i, int N)
+{
+   while (2*i <= N) {
+      // compute address of left child
+      int j = 2*i;
+      // choose larger of two children
+      if (j < N && less(a[j], a[j+1])) j++;
+      if (!less(a[i], a[j])) break;
+      swap(a, i, j);
+      // move one level down the heap
+      i = j;
+   }
+}
