@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 void print_bytes(FILE *file, long n) {
-	int max = (n >= 0) ? n : -n - 1;
+	int max = (n >= 0) ? n : ftell(file) + n;
 	int c;
 	int count = 0;
 	while((c = fgetc(file)) != EOF){
