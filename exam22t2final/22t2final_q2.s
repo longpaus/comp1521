@@ -8,7 +8,7 @@ main:
 	li	$t1,0		# count = 0
 	li	$t2,0		# i = 0
 loop:
-	bgt 	$t2,32,main__end
+	bge 	$t2,32,main__end
 	andi 	$t3,$t0,1
 	beq 	$t3,0,increase_count
 	b 	counter
@@ -25,5 +25,11 @@ counter:
 	
 
 main__end:
+	move 	$a0,$t1
+	li	$v0,1
+	syscall
+	li	$a0,'\n'
+	li	$v0,11
+	syscall
 	li	$v0, 0		# return 0;
 	jr	$ra

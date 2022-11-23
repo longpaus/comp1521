@@ -44,7 +44,7 @@ increaseCurrRun:
 loopPart2:
 	ble 	$t1,$t0,loopIter
 	move 	$t0,$t1
-	loopIter
+	b 		loopIter
 
 loopIter:
 	addi 	$t2,$t2,1		# i++
