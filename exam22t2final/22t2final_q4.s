@@ -18,13 +18,42 @@ main__input_loop:
 	b	main__input_loop	# }
 
 main__input_finished:
-	#############################
-	# TODO: YOUR CODE GOES HERE #
-	#############################
+	li 	$t0,1			# max_run = 1;
+	li 	$t1,1			# current_run = 1
+	li 	$t2,1 			# i = 1
 
-main__print_42:
+loopPart1:
+	bge 	$t2,10,main__print
+	addi 	$t3,$t2,-1		# t3 = i - 1
+	mul 	$t4,$t2,4
+	mul 	$t5,$t3,4
+	la 	$t6,numbers
+	add 	$t4,$t6,$t4		# t4 = &numbers[i]
+	add 	$t5,$t6,$t5 		# t5 = &numbers[i - 1]
+	lw 	$t4,0($t4)		# t4 = numbers[i]
+	lw 	$t5,0($t5)		# t5 = numbers[i - 1]
+
+	bgt 	$t4,$t5,increaseCurrRun
+	li 	$t1,1 			# current_run = 1
+	b 	loopPart2
+
+increaseCurrRun:
+	addi 	$t1,$t1,1		# current_run++
+	b 	loopPart2
+
+loopPart2:
+	ble 	$t1,$t0,loopIter
+	move 	$t0,$t1
+	loopIter
+
+loopIter:
+	addi 	$t2,$t2,1		# i++
+	b 	loopPart1
+
+
+main__print:
 	li	$v0, 1		# syscall 1: print_int
-	li	$a0, 42
+	move	$a0, $t0
 	syscall			# printf("42");
 
 	li	$v0, 11		# syscall 11: print_char
