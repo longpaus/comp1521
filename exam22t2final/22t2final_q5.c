@@ -6,7 +6,7 @@ void print_bytes(FILE *file, long n) {
 	long max = n;
 	if(max < 0){
 		fseek(file,0,SEEK_END);
-		max = ftell(file);
+		max = ftell(file) + n - 1;
 	}
 	int c;
 	int count = 0;
