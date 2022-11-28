@@ -7,8 +7,10 @@ int main(void) {
 
     scanf("%d", &x);
     scanf("%d", &y);
-
-    // PUT YOUR CODE HERE
+    int mask = 3;
+    for(int i = x + 1; i < y; i++){
+        if((mask & i) == 3) printf("%d\n",i);
+    }
 
     return 0;
 }
