@@ -1,6 +1,6 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 
 // print a specified byte from a file
 //
@@ -13,8 +13,26 @@
 // a single line is printed saying: error
 
 int main(int argc, char *argv[]) {
-
-    printf("error\n");
-
-    return 0;
+	FILE *f = fopen(argv[1], "r");
+	fseek(f, 0, SEEK_END);
+	long size = ftell(f);
+	int bytePos = atoi(argv[2]);
+	if (bytePos > 0) {
+		if (bytePos > size) {
+			printf("error\n");
+			return 0;
+		}
+		fseek(f, bytePos, SEEK_SET);
+		int c = fgetc(f);
+		printf("%d\n", c);
+		return 0;
+	}
+	if (-1*bytePos > size) {
+		printf("error\n");
+		return 0;
+	}
+	fseek(f, bytePos, SEEK_END);
+	int c = fgetc(f);
+	printf("%d\n", c);
+	return 0;
 }
