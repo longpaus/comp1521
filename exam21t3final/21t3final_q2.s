@@ -9,7 +9,8 @@ main:
     syscall
     move $t1, $v0
 
-
+loop:
+	
     # THESE LINES JUST PRINT 42
     # REPLACE THE LINES BELOW WITH YOUR CODE
     li $a0, 42

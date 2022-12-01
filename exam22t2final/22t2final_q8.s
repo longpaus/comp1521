@@ -97,12 +97,13 @@ move_disks_body3:
 	jal 	move_disks
 	b 	move_disks_epiloque
 move_disks_epiloque:
-	pop 	$ra
+	
 	pop 	$s4
 	pop	$s3
 	pop	$s2
 	pop 	$s1
 	pop 	$s0
+	pop 	$ra
 	end
 	jr	$ra
 

@@ -3,8 +3,8 @@
 #include <stdio.h>
 
 void print_bytes(FILE *file, long n) {
-	long max = n;
-	if(max < 0){
+	long max = n - 1;
+	if(n < 0){
 		fseek(file,0,SEEK_END);
 		max = ftell(file) + n - 1;
 	}
